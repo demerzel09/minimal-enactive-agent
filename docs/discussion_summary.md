@@ -168,43 +168,64 @@ It should try to identify the **essential mechanism** that remains meaningful ac
 
 ## 7. Minimal formal model
 
-The earlier discussion gradually compressed the architecture to a minimal two-state form.
+The discussion gradually converged on a compact practical form for the first implementation.
 
 ### Practical minimal form
 
-\[
-h_{t+1} = f(h_t, i_t, m_t)
-\]
-
-\[
-m_{t+1} = g(m_t, h_t, i_t)
-\]
-
-\[
-a_t = \phi(m_t)
-\]
+$$
+\begin{aligned}
+h_{t+1} &= f(h_t, i_t, m_t) \\
+m_{t+1} &= g(m_t, h_t, i_t) \\
+a_t &= \phi(m_t)
+\end{aligned}
+$$
 
 Where:
 
-- \( h_t \): slow internal state
-- \( m_t \): behavior mode
-- \( i_t \): body-environment input
-- \( a_t \): action
+- `h_t`: slow internal state
+- `m_t`: behavior mode
+- `i_t`: body-environment input
+- `a_t`: action
 
 ### Interpretation
 
-- `h_t` holds slow internal bias, persistence, or history dependence
-- `m_t` represents current behavior mode or action tendency
-- the update rules implement state-dependent coherence drive
-- action is generated from the current mode
+This form is meant to be the smallest practical expression of the project's current hypothesis.
 
-This form was preferred because it is:
+- `h_t` carries slow persistence, internal bias, and history dependence
+- `m_t` represents the current behavioral regime or action tendency
+- `i_t` connects the agent to the body-environment loop
+- `a_t` is generated from the current mode state
+
+The update functions `f` and `g` are the computational locus of what we have called **state-dependent coherence drive**.
+
+In this framing:
+
+- memory is not a separate symbolic module
+- prediction is not necessarily explicit
+- value judgment is not a standalone scalar
+
+Instead, persistence, switching, and action selection are all treated as consequences of recurrent state dynamics within a closed loop.
+
+### Why this form was preferred
+
+This formulation was preferred because it is:
 
 - compact
-- inspectable
-- suitable for minimal implementation
-- expressive enough to produce state-dependent switching
+- interpretable
+- easy to implement
+- easy to ablate
+- flexible enough to support later extensions
 
+It is not intended as a full account of intelligence.
+It is intended as the smallest useful formal core for testing **minimal enactive agency**.
+
+### Compressed view
+
+At the most compressed level, the model says:
+
+> an agent maintains an internal state, updates it through closed-loop interaction, and generates action through mode dynamics shaped by that state
+
+This is the current minimal formal hypothesis of the project.
 ---
 
 ## 8. Why this is not yet “human intelligence”

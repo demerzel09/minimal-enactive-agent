@@ -40,24 +40,20 @@ without relying on a fixed external objective.
 
 The practical minimal form currently considered is:
 
-\[
-h_{t+1} = f(h_t, i_t, m_t)
-\]
-
-\[
-m_{t+1} = g(m_t, h_t, i_t)
-\]
-
-\[
-a_t = \phi(m_t)
-\]
+$$
+\begin{aligned}
+h_{t+1} &= f(h_t, i_t, m_t) \\
+m_{t+1} &= g(m_t, h_t, i_t) \\
+a_t &= \phi(m_t)
+\end{aligned}
+$$
 
 Where:
 
-- \( h_t \): slow internal state
-- \( m_t \): behavior mode
-- \( i_t \): body-environment input
-- \( a_t \): action
+- `h_t`: slow internal state
+- `m_t`: behavior mode
+- `i_t`: body-environment input
+- `a_t`: action
 
 This model is intentionally small, interpretable, and easy to ablate.
 
