@@ -226,6 +226,7 @@ At the most compressed level, the model says:
 > an agent maintains an internal state, updates it through closed-loop interaction, and generates action through mode dynamics shaped by that state
 
 This is the current minimal formal hypothesis of the project.
+
 ---
 
 ## 8. Why this is not yet “human intelligence”
