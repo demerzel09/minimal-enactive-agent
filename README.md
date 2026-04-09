@@ -8,96 +8,111 @@ This repository explores a simple question:
 
 > How can an agent generate the next action when no explicit external goal is fixed?
 
-Instead of treating behavior as pure reward maximization, this project starts from two working ideas:
+The first proof of concept (PoC) in this repo follows the docs and implements:
 
-1. **Body-environment closed loop**  
-   The agent senses, acts, changes the environment, and is changed by it in return.
+1. **Body-environment closed loop**
+2. **State-dependent coherence dynamics**
 
-2. **State-dependent coherence drive**  
-   The agent tends to generate actions that are more coherent with its current internal state and ongoing interaction with the environment.
+The minimal architecture uses:
 
-The goal is not to reproduce full intelligence.
-The goal is to build the smallest useful computational model of **minimal enactive agency**.
+- `h_t`: slow internal state
+- `m_t`: behavior mode variable
 
-## Core hypothesis
+and a simple local-sensing 2D foraging world.
 
-A meaningful proto-agent may emerge from only:
+## Implemented PoC components
 
-- a **slow internal state**
-- a **behavior mode variable**
-- a **closed-loop environment**
+- `src/env.py` — 2D closed-loop foraging environment
+  - one depleting food patch
+  - sparse risk signal
+  - local sensing only (`[local_food, local_risk, food_delta]`)
+- `src/agent.py` — minimal recurrent rate-based agent with `h` and `m`
+- `src/run_simulation.py` — single-episode simulation runner
+- `src/eval.py` — basic qualitative metrics
+- `src/viz.py` — trajectory + state visualization
 
-This is meant to test whether simple state-dependent dynamics can generate:
+## Minimal model form
 
-- stay / leave behavior
-- explore / exploit switching
-- history dependence
-- mode persistence and switching
+The implementation follows the repository model spec:
 
-without relying on a fixed external objective.
-
-## Minimal model
-
-The practical minimal form currently considered is:
-
-$$
+\[
 \begin{aligned}
 h_{t+1} &= f(h_t, i_t, m_t) \\
 m_{t+1} &= g(m_t, h_t, i_t) \\
 a_t &= \phi(m_t)
 \end{aligned}
-$$
+\]
 
-Where:
+With ablation flags:
 
-- `h_t`: slow internal state
-- `m_t`: behavior mode
-- `i_t`: body-environment input
-- `a_t`: action
+- `use_h: false` for **no internal state h**
+- `use_m: false` for **no mode variable m**
 
-This model is intentionally small, interpretable, and easy to ablate.
+## Setup
 
-## First proof of concept
+Python 3.10+ recommended.
 
-The first PoC should implement:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install numpy matplotlib pyyaml
+```
 
-- a minimal 2D foraging environment
-- a depleting food patch
-- a sparse risk signal
-- local sensing only
-- an agent with internal state `h` and mode variable `m`
+## Run simulation
+
+### Full model
+
+```bash
+python -m src.run_simulation --config configs/full.yaml
+```
+
+### Ablation: no h
+
+```bash
+python -m src.run_simulation --config configs/ablation_no_h.yaml
+```
+
+### Ablation: no m
+
+```bash
+python -m src.run_simulation --config configs/ablation_no_m.yaml
+```
+
+Outputs are written to each config's `simulation.output_dir`, for example:
+
+- `outputs/full/metrics.json`
+- `outputs/full/trajectory.png`
+- `outputs/full/states.png`
 
 ## Evaluation focus
 
-This repository does **not** optimize for generic benchmark performance.
+The PoC is not tuned for benchmark reward. It is designed for inspectable qualitative behavior:
 
-The main questions are:
+- stay / leave behavior
+- explore / exploit switching
+- mode persistence and switching
+- history dependence proxy
+- ablation effects
 
-- Does internal state matter?
-- Does mode dynamics matter?
-- Can history-dependent behavior emerge?
-- Can the agent show nontrivial stay/leave and explore/exploit patterns?
+Current metrics in `src/eval.py` include:
 
-## Repository direction
+- time in patch
+- stay/leave transitions
+- average patch residence proxy
+- exploration radius
+- mode switch count
+- mode persistence
+- history dependence proxy (food-trend vs leave tendency)
 
-The project is intended to proceed in small steps:
+## Notes on simplicity
 
-1. define the minimal model clearly
-2. build a minimal environment
-3. implement the smallest working agent
-4. run ablations
-5. expand only when necessary
+This first PoC intentionally avoids:
 
-## Working terminology
+- heavy RL training libraries
+- large ML frameworks
+- unnecessary abstraction layers
 
-To avoid unnecessary philosophical inflation, this project uses terms such as:
-
-- minimal enactive agency
-- biological agency
-- state-dependent coherence
-- closed-loop adaptation
-
-rather than claiming full intelligence from the outset.
+Dynamics are hand-tuned and inspectable to support iterative conceptual validation.
 
 ## Documents
 
@@ -105,8 +120,3 @@ rather than claiming full intelligence from the outset.
 - `docs/poc_plan.md` — implementation-oriented proof-of-concept plan
 - `docs/model_spec.md` — model details and assumptions
 - `docs/experiment_plan.md` — evaluation plan
-
-## Status
-
-Initial conceptual phase.
-The next step is to implement the smallest inspectable proof of concept.
