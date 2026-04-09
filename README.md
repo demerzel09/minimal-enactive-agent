@@ -1,2 +1,116 @@
 # minimal-enactive-agent
-A minimal embodied agent for exploring state-dependent coherence-driven behavior in closed-loop environments.(閉ループ環境における状態依存的なコヒーレンス駆動型行動を探索するための最小限の身体化エージェント。)
+
+A minimal embodied agent for studying how behavior emerges from internal state in a closed sensorimotor loop.
+
+## Overview
+
+This repository explores a simple question:
+
+> How can an agent generate the next action when no explicit external goal is fixed?
+
+Instead of treating behavior as pure reward maximization, this project starts from two working ideas:
+
+1. **Body-environment closed loop**  
+   The agent senses, acts, changes the environment, and is changed by it in return.
+
+2. **State-dependent coherence drive**  
+   The agent tends to generate actions that are more coherent with its current internal state and ongoing interaction with the environment.
+
+The goal is not to reproduce full intelligence.
+The goal is to build the smallest useful computational model of **minimal enactive agency**.
+
+## Core hypothesis
+
+A meaningful proto-agent may emerge from only:
+
+- a **slow internal state**
+- a **behavior mode variable**
+- a **closed-loop environment**
+
+This is meant to test whether simple state-dependent dynamics can generate:
+
+- stay / leave behavior
+- explore / exploit switching
+- history dependence
+- mode persistence and switching
+
+without relying on a fixed external objective.
+
+## Minimal model
+
+The practical minimal form currently considered is:
+
+\[
+h_{t+1} = f(h_t, i_t, m_t)
+\]
+
+\[
+m_{t+1} = g(m_t, h_t, i_t)
+\]
+
+\[
+a_t = \phi(m_t)
+\]
+
+Where:
+
+- \( h_t \): slow internal state
+- \( m_t \): behavior mode
+- \( i_t \): body-environment input
+- \( a_t \): action
+
+This model is intentionally small, interpretable, and easy to ablate.
+
+## First proof of concept
+
+The first PoC should implement:
+
+- a minimal 2D foraging environment
+- a depleting food patch
+- a sparse risk signal
+- local sensing only
+- an agent with internal state `h` and mode variable `m`
+
+## Evaluation focus
+
+This repository does **not** optimize for generic benchmark performance.
+
+The main questions are:
+
+- Does internal state matter?
+- Does mode dynamics matter?
+- Can history-dependent behavior emerge?
+- Can the agent show nontrivial stay/leave and explore/exploit patterns?
+
+## Repository direction
+
+The project is intended to proceed in small steps:
+
+1. define the minimal model clearly
+2. build a minimal environment
+3. implement the smallest working agent
+4. run ablations
+5. expand only when necessary
+
+## Working terminology
+
+To avoid unnecessary philosophical inflation, this project uses terms such as:
+
+- minimal enactive agency
+- biological agency
+- state-dependent coherence
+- closed-loop adaptation
+
+rather than claiming full intelligence from the outset.
+
+## Documents
+
+- `docs/discussion_summary.md` — background and conceptual path
+- `docs/poc_plan.md` — implementation-oriented proof-of-concept plan
+- `docs/model_spec.md` — model details and assumptions
+- `docs/experiment_plan.md` — evaluation plan
+
+## Status
+
+Initial conceptual phase.
+The next step is to implement the smallest inspectable proof of concept.
