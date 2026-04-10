@@ -1,0 +1,10 @@
+[project]
+name = "minimal-enactive-agent"
+version = "0.1.0"
+description = "A minimal embodied agent for studying how behavior emerges from internal state in a closed sensorimotor loop."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "pyyaml",
+]

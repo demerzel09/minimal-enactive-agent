@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Full Model",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.run_simulation",
+            "args": ["--config", "configs/full.yaml"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Ablation: no h",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.run_simulation",
+            "args": ["--config", "configs/ablation_no_h.yaml"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Ablation: no m",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.run_simulation",
+            "args": ["--config", "configs/ablation_no_m.yaml"],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
