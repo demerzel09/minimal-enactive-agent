@@ -7,8 +7,9 @@ model:
   alpha_h: 0.18
   alpha_m: 0.40
   init_mode: handtuned
-  use_h: false
+  use_h: true
   use_m: true
+  recurrence_scale: 0.2
 
 environment:
   world_size: 20.0
@@ -35,4 +36,4 @@ environment:
 
 simulation:
   steps: 500
-  output_dir: outputs/ablation_no_h
+  output_dir: outputs/ablation_reduced_recurrence

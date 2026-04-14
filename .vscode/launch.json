@@ -24,6 +24,21 @@
             "module": "src.run_simulation",
             "args": ["--config", "configs/ablation_no_m.yaml"],
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Ablation: reduced recurrence",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.run_simulation",
+            "args": ["--config", "configs/ablation_reduced_recurrence.yaml"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Multi-seed",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.run_multi_seed",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

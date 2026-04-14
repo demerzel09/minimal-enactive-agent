@@ -42,7 +42,7 @@ def plot_states(log: Dict, output_path: str) -> None:
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    t = np.arange(len(log["reward"]))
+    t = np.arange(len(log["h"]))
     h = np.asarray(log["h"])  # [T, h_dim]
     m = np.asarray(log["m"])  # [T, m_dim]
 

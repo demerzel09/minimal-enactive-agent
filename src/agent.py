@@ -7,9 +7,12 @@ from typing import Dict
 
 import numpy as np
 
+from src.env import EnvState
+
 
 @dataclass
 class AgentStep:
+    observation: np.ndarray
     action: np.ndarray
     h: np.ndarray
     m: np.ndarray
@@ -42,10 +45,44 @@ class MinimalEnactiveAgent:
 
         self.use_h = bool(model_cfg.get("use_h", True))
         self.use_m = bool(model_cfg.get("use_m", True))
+        self.recurrence_scale = float(model_cfg.get("recurrence_scale", 1.0))
+
+        # Sensor parameters — part of the agent's body, not the environment.
+        env_cfg = config.get("environment", {})
+        self.food_sensor_sigma = float(env_cfg.get("food_sensor_sigma", 2.0))
+        self.risk_sensor_sigma = float(env_cfg.get("risk_sensor_sigma", 1.4))
+        self.prev_local_food = 0.0
 
         seed = int(config.get("seed", 0)) + 17
         self.rng = np.random.default_rng(seed)
 
+        init_mode = str(model_cfg.get("init_mode", "random"))
+        if init_mode == "handtuned":
+            self._init_handtuned()
+        else:
+            self._init_random(model_cfg)
+
+        # Ablation C: scale down recurrent self-connections.
+        if self.recurrence_scale != 1.0:
+            self.W_hh = self.W_hh * self.recurrence_scale
+            self.W_uu = self.W_uu * self.recurrence_scale
+
+        # Action decoder from mode to [turn, speed].
+        self.W_a = np.array([
+            [0.0, 0.8, -0.8],   # turn: exploit straight, explore/avoid swing
+            [0.25, 1.0, 0.85],  # speed: exploit moderate, explore/avoid fast
+        ])
+        self.b_a = np.array([0.0, 0.2])
+
+        # Direct mapping for no-m ablation.
+        self.W_direct = self.rng.normal(0.0, 0.5, size=(self.action_dim, self.obs_dim + self.h_dim))
+        self.b_direct = self.rng.normal(0.0, 0.1, size=(self.action_dim,))
+
+        self.h = np.zeros(self.h_dim, dtype=float)
+        self.u = np.zeros(self.m_dim, dtype=float)
+        self.m = np.ones(self.m_dim, dtype=float) / self.m_dim
+
+    def _init_random(self, model_cfg: Dict) -> None:
         scale = float(model_cfg.get("init_scale", 0.6))
         self.W_hh = self.rng.normal(0.0, scale, size=(self.h_dim, self.h_dim))
         self.W_hm = self.rng.normal(0.0, scale, size=(self.h_dim, self.m_dim))
@@ -57,25 +94,82 @@ class MinimalEnactiveAgent:
         self.W_ui = self.rng.normal(0.0, scale, size=(self.m_dim, self.obs_dim))
         self.b_u = self.rng.normal(0.0, 0.1, size=(self.m_dim,))
 
-        # Action decoder from mode to [turn, speed].
-        self.W_a = np.array([
-            [0.0, 0.8, -0.8],   # turn: exploit ~0, explore left/right swings
-            [0.25, 1.0, 0.85],  # speed: exploit slower, explore/avoid faster
+    def _init_handtuned(self) -> None:
+        """Hand-designed weights with interpretable causal structure.
+
+        State interpretation:
+          h[0] = depletion pressure (rises when food is scarce)
+          h[1] = exploration drift (rises when outside patch)
+        Mode interpretation:
+          m[0] = exploit (stay in patch)
+          m[1] = explore (leave and move)
+          m[2] = avoid  (flee from risk)
+        Input: i = [local_food, local_risk, food_delta]
+        """
+        # --- h dynamics ---
+        # W_hi: input -> h (food actively suppresses depletion/exploration)
+        self.W_hi = np.array([
+            [-0.8, +0.3, -0.4],  # food strongly suppresses depletion; risk raises it
+            [-0.5, -0.2, -0.3],  # food suppresses exploration drift
         ])
-        self.b_a = np.array([0.0, 0.2])
+        # W_hh: h self-persistence (weakened to avoid fixed-point trapping)
+        self.W_hh = np.array([
+            [+0.3, +0.15],  # mild persistence, weak cross-talk
+            [+0.2, +0.3],   # depletion mildly drives exploration
+        ])
+        # W_hm: mode -> h feedback
+        self.W_hm = np.array([
+            [-0.5, +0.1, +0.2],  # exploiting→depletion↓, explore/avoid→depletion↑
+            [-0.4, +0.3, +0.0],  # exploiting→explore_drift↓, exploring→explore_drift↑
+        ])
+        # Positive bias: depletion and exploration RISE by default (when no food)
+        self.b_h = np.array([+0.3, +0.2])
 
-        # Direct mapping for no-m ablation.
-        self.W_direct = self.rng.normal(0.0, scale, size=(self.action_dim, self.obs_dim + self.h_dim))
-        self.b_direct = self.rng.normal(0.0, 0.1, size=(self.action_dim,))
+        # --- mode dynamics ---
+        # W_uh: h -> mode (stronger influence so h actually drives switching)
+        self.W_uh = np.array([
+            [-0.8, -0.5],  # depletion→exploit↓, explore_drift→exploit↓
+            [+0.6, +0.9],  # depletion→explore↑, explore_drift→explore↑
+            [+0.4, -0.2],  # depletion→avoid↑, explore_drift→avoid↓
+        ])
+        # W_uu: mode self-persistence and mutual inhibition
+        self.W_uu = np.array([
+            [+0.5, -0.3, -0.2],  # exploit persists, competes with explore/avoid
+            [-0.3, +0.5, -0.2],  # explore persists, competes with exploit/avoid
+            [-0.2, -0.2, +0.4],  # avoid persists weakly
+        ])
+        # W_ui: input -> mode direct
+        self.W_ui = np.array([
+            [+0.7, -0.3, +0.4],  # food→exploit↑, risk→exploit↓, food_rising→exploit↑
+            [-0.5, -0.1, -0.4],  # food→explore↓, food_falling→explore↑
+            [-0.1, +0.8, -0.0],  # risk→avoid↑
+        ])
+        self.b_u = np.array([-0.1, +0.0, -0.2])
 
-        self.h = np.zeros(self.h_dim, dtype=float)
-        self.u = np.zeros(self.m_dim, dtype=float)
-        self.m = np.ones(self.m_dim, dtype=float) / self.m_dim
+    def sense(self, env_state: EnvState) -> np.ndarray:
+        """Compute observation from environment state through the agent's body.
+
+        This is the agent's active sensing — observation is an act, not a gift.
+        Sensor parameters (sigma) belong to the agent, not the environment.
+        """
+        d_food = np.linalg.norm(env_state.pos - env_state.patch_center)
+        food_spatial = np.exp(-(d_food ** 2) / (2 * self.food_sensor_sigma ** 2))
+        local_food = float(np.clip(env_state.patch_level * food_spatial, 0.0, 1.0))
+
+        d_risk = np.linalg.norm(env_state.pos - env_state.risk_center)
+        risk_base = env_state.risk_strength * np.exp(-(d_risk ** 2) / (2 * self.risk_sensor_sigma ** 2))
+        local_risk = float(np.clip(risk_base + env_state.risk_spike, 0.0, 1.0))
+
+        food_delta = local_food - self.prev_local_food
+        self.prev_local_food = local_food
+
+        return np.array([local_food, local_risk, food_delta], dtype=float)
 
     def reset(self) -> None:
         self.h.fill(0.0)
         self.u.fill(0.0)
         self.m = np.ones(self.m_dim, dtype=float) / self.m_dim
+        self.prev_local_food = 0.0
 
     def step(self, obs: np.ndarray) -> AgentStep:
         obs = np.asarray(obs, dtype=float)
@@ -101,7 +195,7 @@ class MinimalEnactiveAgent:
         action[0] = float(np.clip(np.tanh(action[0]), -1.0, 1.0))
         action[1] = float(np.clip(0.5 * (np.tanh(action[1]) + 1.0), 0.0, 1.0))
 
-        return AgentStep(action=action, h=self.h.copy(), m=self.m.copy())
+        return AgentStep(observation=obs.copy(), action=action, h=self.h.copy(), m=self.m.copy())
 
     @staticmethod
     def _softmax(x: np.ndarray) -> np.ndarray:

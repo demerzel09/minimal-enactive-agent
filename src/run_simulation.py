@@ -24,8 +24,9 @@ def run_episode(config: Dict) -> Dict:
     env = ForagingEnv(config)
     agent = MinimalEnactiveAgent(config)
 
-    obs = env.reset()
+    env_state = env.reset()
     agent.reset()
+    obs = agent.sense(env_state)
 
     steps = int(config["simulation"].get("steps", 400))
 
@@ -36,7 +37,6 @@ def run_episode(config: Dict) -> Dict:
         "local_risk": [],
         "in_patch": [],
         "patch_level": [],
-        "reward": [],
         "h": [],
         "m": [],
         "action_turn": [],
@@ -45,21 +45,19 @@ def run_episode(config: Dict) -> Dict:
 
     for _ in range(steps):
         step = agent.step(obs)
-        result = env.step(step.action)
+        env_state, step_info = env.step(step.action)
+        obs = agent.sense(env_state)
 
-        log["x"].append(result.info["x"])
-        log["y"].append(result.info["y"])
-        log["local_food"].append(result.info["local_food"])
-        log["local_risk"].append(result.info["local_risk"])
-        log["in_patch"].append(result.info["in_patch"])
-        log["patch_level"].append(result.info["patch_level"])
-        log["reward"].append(result.reward)
+        log["x"].append(step_info.info["x"])
+        log["y"].append(step_info.info["y"])
+        log["local_food"].append(float(step.observation[0]))
+        log["local_risk"].append(float(step.observation[1]))
+        log["in_patch"].append(step_info.info["in_patch"])
+        log["patch_level"].append(step_info.info["patch_level"])
         log["h"].append(step.h.tolist())
         log["m"].append(step.m.tolist())
         log["action_turn"].append(float(step.action[0]))
         log["action_speed"].append(float(step.action[1]))
-
-        obs = result.observation
 
     metrics = compute_metrics(log)
 

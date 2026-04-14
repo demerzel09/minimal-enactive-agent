@@ -4,9 +4,9 @@ model:
   obs_dim: 3
   h_dim: 2
   m_dim: 3
-  alpha_h: 0.12
-  alpha_m: 0.35
-  init_scale: 0.55
+  alpha_h: 0.18
+  alpha_m: 0.40
+  init_mode: handtuned
   use_h: true
   use_m: false
 
@@ -30,7 +30,7 @@ environment:
   risk_noise_prob: 0.03
   risk_noise_strength: 0.5
 
-  food_sensor_sigma: 2.0
+  food_sensor_sigma: 4.0
   risk_sensor_sigma: 1.4
 
 simulation:

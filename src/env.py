@@ -9,19 +9,30 @@ import numpy as np
 
 
 @dataclass
-class StepResult:
-    observation: np.ndarray
-    reward: float
+class EnvState:
+    """Raw environment state exposed to the agent's sensing apparatus."""
+    pos: np.ndarray
+    heading: float
+    patch_center: np.ndarray
+    patch_level: float
+    risk_center: np.ndarray
+    risk_strength: float
+    risk_spike: float
+    in_patch: bool
+    t: int
+
+
+@dataclass
+class StepInfo:
+    """Logging information returned after each environment step."""
     info: Dict[str, float]
 
 
 class ForagingEnv:
     """2D environment with one depleting food patch and sparse risk.
 
-    The agent receives only local sensing:
-    - local food
-    - local risk
-    - local food trend (delta from previous step)
+    The environment manages physics (movement, depletion) and exposes raw state.
+    Observation is computed by the agent's own sensing apparatus, not by the environment.
     """
 
     def __init__(self, config: Dict):
@@ -44,29 +55,24 @@ class ForagingEnv:
         self.risk_noise_prob = float(env_cfg.get("risk_noise_prob", 0.03))
         self.risk_noise_strength = float(env_cfg.get("risk_noise_strength", 0.5))
 
-        self.food_sensor_sigma = float(env_cfg.get("food_sensor_sigma", 2.0))
-        self.risk_sensor_sigma = float(env_cfg.get("risk_sensor_sigma", 1.4))
-
         self.seed = int(config.get("seed", 0))
         self.rng = np.random.default_rng(self.seed)
 
         self.pos = np.zeros(2, dtype=float)
         self.heading = 0.0
         self.patch_level = self.patch_max_food
-        self.prev_local_food = 0.0
         self.t = 0
 
-    def reset(self) -> np.ndarray:
+    def reset(self) -> EnvState:
         env_cfg = self.cfg["environment"]
         self.pos = np.array(env_cfg.get("start_pos", [7.0, 10.0]), dtype=float)
         self.heading = float(env_cfg.get("start_heading", 0.0))
         self.patch_level = self.patch_max_food
         self.t = 0
-        self.prev_local_food = self._local_food_signal()
-        return self._observe()
+        return self._make_state()
 
-    def step(self, action: np.ndarray) -> StepResult:
-        """Action is [turn_delta, speed] in continuous space."""
+    def step(self, action: np.ndarray) -> Tuple[EnvState, StepInfo]:
+        """Apply action, update physics, return new state."""
         turn_delta = float(np.clip(action[0], -1.0, 1.0)) * self.turn_angle
         speed = float(np.clip(action[1], 0.0, 1.0)) * self.step_size
 
@@ -76,46 +82,36 @@ class ForagingEnv:
         self.pos = np.clip(self.pos, 0.0, self.world_size)
 
         # Closed-loop environmental changes after action.
-        was_in_patch = self.in_patch(self.pos)
-        if was_in_patch:
+        is_in_patch = self.in_patch(self.pos)
+        if is_in_patch:
             self.patch_level = max(0.0, self.patch_level - self.patch_depletion_rate)
         else:
             self.patch_level = min(self.patch_max_food, self.patch_level + self.patch_regen_rate)
 
-        local_food = self._local_food_signal()
-        local_risk = self._local_risk_signal()
+        self.t += 1
 
-        reward = local_food - 0.3 * local_risk
-        info = {
-            "local_food": local_food,
-            "local_risk": local_risk,
-            "in_patch": float(was_in_patch),
+        state = self._make_state()
+        info = StepInfo(info={
+            "in_patch": float(is_in_patch),
             "patch_level": self.patch_level,
             "x": self.pos[0],
             "y": self.pos[1],
-        }
+        })
+        return state, info
 
-        self.t += 1
-        obs = self._observe()
-        return StepResult(observation=obs, reward=reward, info=info)
-
-    def _observe(self) -> np.ndarray:
-        local_food = self._local_food_signal()
-        local_risk = self._local_risk_signal()
-        food_delta = local_food - self.prev_local_food
-        self.prev_local_food = local_food
-        return np.array([local_food, local_risk, food_delta], dtype=float)
-
-    def _local_food_signal(self) -> float:
-        d = np.linalg.norm(self.pos - self.patch_center)
-        spatial = np.exp(-(d**2) / (2 * self.food_sensor_sigma**2))
-        return float(np.clip(self.patch_level * spatial, 0.0, 1.0))
-
-    def _local_risk_signal(self) -> float:
-        d = np.linalg.norm(self.pos - self.risk_center)
-        base = self.risk_strength * np.exp(-(d**2) / (2 * self.risk_sensor_sigma**2))
-        sparse_spike = self.risk_noise_strength if self.rng.random() < self.risk_noise_prob else 0.0
-        return float(np.clip(base + sparse_spike, 0.0, 1.0))
+    def _make_state(self) -> EnvState:
+        risk_spike = self.risk_noise_strength if self.rng.random() < self.risk_noise_prob else 0.0
+        return EnvState(
+            pos=self.pos.copy(),
+            heading=self.heading,
+            patch_center=self.patch_center,
+            patch_level=self.patch_level,
+            risk_center=self.risk_center,
+            risk_strength=self.risk_strength,
+            risk_spike=risk_spike,
+            in_patch=self.in_patch(self.pos),
+            t=self.t,
+        )
 
     def in_patch(self, pos: np.ndarray) -> bool:
         return np.linalg.norm(pos - self.patch_center) <= self.patch_radius
