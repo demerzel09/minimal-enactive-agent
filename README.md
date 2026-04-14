@@ -1,43 +1,43 @@
 # minimal-enactive-agent
 
-A minimal embodied agent for studying how behavior emerges from internal state in a closed sensorimotor loop.
+閉じた感覚運動ループの中で、内部状態からどのように振る舞いが立ち上がるのかを調べるための、最小限の身体化エージェントです。
 
-## Overview
+## 概要
 
-This repository explores a simple question:
+このリポジトリは、次の単純な問いを探ります。
 
-> How can an agent generate the next action when no explicit external goal is fixed?
+> 明示的な外部目標が固定されていないとき、エージェントはどのように次の行動を生成できるのか？
 
-Instead of treating behavior as pure reward maximization, this project starts from two working ideas:
+振る舞いを純粋な報酬最大化として扱うのではなく、このプロジェクトは次の 2 つの作業仮説から出発します。
 
-1. **Body-environment closed loop**  
-   The agent senses, acts, changes the environment, and is changed by it in return.
+1. **身体-環境の閉ループ**  
+   エージェントは感知し、行為し、環境を変え、その変化によって逆に自らも変化する。
 
-2. **State-dependent coherence drive**  
-   The agent tends to generate actions that are more coherent with its current internal state and ongoing interaction with the environment.
+2. **状態依存のコヒーレンス駆動**  
+   エージェントは、現在の内部状態と継続中の環境との相互作用に、より整合的な行動を生成する傾向をもつ。
 
-The goal is to build the smallest useful computational model of **minimal enactive agency**.
+目標は、**最小限のエナクティブなエージェンシー**を記述する、最小で有用な計算モデルを構築することです。
 
-## Core hypothesis
+## 中核仮説
 
-A meaningful proto-agent may emerge from only:
+意味のある原初的エージェントは、次の要素だけから立ち上がるかもしれません。
 
-- a **slow internal state**
-- a **behavior mode variable**
-- a **closed-loop environment**
+- **遅い内部状態**
+- **行動モード変数**
+- **閉ループ環境**
 
-This is meant to test whether simple state-dependent dynamics can generate:
+これは、単純な状態依存ダイナミクスだけで次のような性質が生じるかを検証するためのものです。
 
-- stay / leave behavior
-- explore / exploit switching
-- history dependence
-- mode persistence and switching
+- 滞在 / 離脱行動
+- 探索 / 活用の切り替え
+- 履歴依存性
+- モードの持続と切り替え
 
-without relying on a fixed external objective.
+固定された外部目的には依存しません。
 
-## Minimal model
+## 最小モデル
 
-The practical minimal form currently considered is:
+現在想定している実用上の最小形は次の通りです。
 
 $$
 \begin{aligned}
@@ -47,60 +47,60 @@ a_t &= \phi(m_t)
 \end{aligned}
 $$
 
-Where:
+ここで:
 
-- \( h_t \): slow internal state
-- \( m_t \): behavior mode
-- \( i_t \): body-environment input
-- \( a_t \): action
+- \( h_t \): 遅い内部状態
+- \( m_t \): 行動モード
+- \( i_t \): 身体-環境入力
+- \( a_t \): 行動
 
-This model is intentionally small, interpretable, and easy to ablate.
+このモデルは意図的に小さく、解釈しやすく、アブレーションしやすいように設計されています。
 
-## First proof of concept
+## 最初の概念実証 (PoC)
 
-The first PoC should implement:
+最初の PoC では次を実装します。
 
-- a minimal 2D foraging environment
-- a depleting food patch
-- a sparse risk signal
-- local sensing only
-- an agent with internal state `h` and mode variable `m`
+- 最小限の 2D 採餌環境
+- 枯渇する食物パッチ
+- 疎なリスク信号
+- 局所センシングのみ
+- 内部状態 `h` とモード変数 `m` をもつエージェント
 
-## Repository direction
+## リポジトリの進め方
 
-The project is intended to proceed in small steps:
+このプロジェクトは、小さな段階を積み重ねながら進める想定です。
 
-1. define the minimal model clearly
-2. build a minimal environment
-3. implement the smallest working agent
-4. run ablations
-5. expand only when necessary
+1. 最小モデルを明確に定義する
+2. 最小環境を構築する
+3. 最小限で動くエージェントを実装する
+4. アブレーションを実行する
+5. 必要になったときだけ拡張する
 
-## Working terminology
+## 作業上の用語
 
-To avoid unnecessary philosophical inflation, this project uses terms such as:
+不要に哲学的な言い回しを避けるため、このプロジェクトでは次のような語を使います。
 
-- minimal enactive agency
-- biological agency
-- state-dependent coherence
-- closed-loop adaptation
+- 最小限のエナクティブ・エージェンシー
+- 生物的エージェンシー
+- 状態依存コヒーレンス
+- 閉ループ適応
 
-rather than claiming full intelligence from the outset.
+最初から完全な知能を主張することはしません。
 
-## Implemented PoC components
+## 実装済み PoC コンポーネント
 
-- `src/env.py` — 2D closed-loop foraging environment
-  - one depleting food patch
-  - sparse risk signal
-  - local sensing only (`[local_food, local_risk, food_delta]`)
-- `src/agent.py` — minimal recurrent rate-based agent with `h` and `m`
-- `src/run_simulation.py` — single-episode simulation runner
-- `src/eval.py` — basic qualitative metrics
-- `src/viz.py` — trajectory + state visualization
+- `src/env.py` - 2D の閉ループ採餌環境
+  - 1 つの枯渇する食物パッチ
+  - 疎なリスク信号
+  - 局所センシングのみ (`[local_food, local_risk, food_delta]`)
+- `src/agent.py` - `h` と `m` をもつ最小リカレント率ベースエージェント
+- `src/run_simulation.py` - 単一エピソードのシミュレーション実行器
+- `src/eval.py` - 基本的な定性的指標
+- `src/viz.py` - 軌跡と状態の可視化
 
-## Setup
+## セットアップ
 
-Python 3.10+ recommended.
+Python 3.10 以上を推奨します。
 
 ```bash
 python -m venv .venv
@@ -108,74 +108,74 @@ source .venv/bin/activate
 pip install numpy matplotlib pyyaml
 ```
 
-## Run simulation
+## シミュレーション実行
 
-### Full model
+### 完全モデル
 
 ```bash
 python -m src.run_simulation --config configs/full.yaml
 ```
 
-### Ablation: no h
+### アブレーション: h なし
 
 ```bash
 python -m src.run_simulation --config configs/ablation_no_h.yaml
 ```
 
-### Ablation: no m
+### アブレーション: m なし
 
 ```bash
 python -m src.run_simulation --config configs/ablation_no_m.yaml
 ```
 
-Outputs are written to each config's `simulation.output_dir`, for example:
+出力は各設定の `simulation.output_dir` に保存されます。たとえば:
 
 - `outputs/full/metrics.json`
 - `outputs/full/trajectory.png`
 - `outputs/full/states.png`
 
-## Evaluation focus
+## 評価の焦点
 
-This repository does **not** optimize for generic benchmark performance.
+このリポジトリは、汎用ベンチマーク性能の最適化を目的としていません。
 
-The main questions are:
+主な問いは次の通りです。
 
-- Does internal state matter?
-- Does mode dynamics matter?
-- Can history-dependent behavior emerge?
-- Can the agent show nontrivial stay/leave and explore/exploit patterns?
+- 内部状態は重要か？
+- モードダイナミクスは重要か？
+- 履歴依存的な振る舞いは立ち上がるか？
+- エージェントは自明でない滞在 / 離脱や探索 / 活用のパターンを示せるか？
 
-The PoC is not tuned for benchmark reward. It is designed for inspectable qualitative behavior:
+PoC はベンチマーク報酬向けに調整していません。観察可能な定性的振る舞いを確認するために設計されています。
 
-- stay / leave behavior
-- explore / exploit switching
-- mode persistence and switching
-- history dependence proxy
-- ablation effects
+- 滞在 / 離脱行動
+- 探索 / 活用の切り替え
+- モードの持続と切り替え
+- 履歴依存性の代理指標
+- アブレーションの効果
 
-Current metrics in `src/eval.py` include:
+`src/eval.py` にある現在の指標には、次が含まれます。
 
-- time in patch
-- stay/leave transitions
-- average patch residence proxy
-- exploration radius
-- mode switch count
-- mode persistence
-- history dependence proxy (food-trend vs leave tendency)
+- パッチ内滞在時間
+- 滞在 / 離脱の遷移
+- 平均パッチ滞在の代理指標
+- 探索半径
+- モード切り替え回数
+- モード持続性
+- 履歴依存性の代理指標（食物トレンドと離脱傾向）
 
-## Notes on simplicity
+## 単純さについて
 
-This first PoC intentionally avoids:
+最初の PoC では、意図的に次を避けています。
 
-- heavy RL training libraries
-- large ML frameworks
-- unnecessary abstraction layers
+- 重い RL 学習ライブラリ
+- 大規模な ML フレームワーク
+- 不要な抽象化レイヤ
 
-Dynamics are hand-tuned and inspectable to support iterative conceptual validation.
+ダイナミクスは、概念的な妥当性を反復的に確認できるよう、手調整で観察可能な形にしています。
 
-## Documents
+## ドキュメント
 
-- `docs/discussion_summary.md` — background and conceptual path
-- `docs/poc_plan.md` — implementation-oriented proof-of-concept plan
-- `docs/model_spec.md` — model details and assumptions
-- `docs/experiment_plan.md` — evaluation plan
+- `docs/discussion_summary.md` - 背景と概念的な流れ
+- `docs/poc_plan.md` - 実装寄りの PoC 計画
+- `docs/model_spec.md` - モデル詳細と前提
+- `docs/experiment_plan.md` - 評価計画

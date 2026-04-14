@@ -1,100 +1,100 @@
-# Model Specification: Minimal Enactive Agent
+# モデル仕様: 最小エナクティブエージェント
 
-## 1. Purpose
+## 1. 目的
 
-This document specifies the first computational model used in `minimal-enactive-agent`.
+この文書は、`minimal-enactive-agent` で用いる最初の計算モデルを規定する。
 
-The model is intentionally minimal.
-Its purpose is not to reproduce a specific organism, nor to maximize benchmark reward.
-Its purpose is to test whether a very small recurrent agent can generate meaningful state-dependent behavior in a closed body-environment loop.
+このモデルは意図的に最小限である。
+目的は特定の生物を再現することでも、ベンチマーク報酬を最大化することでもない。
+身体-環境の閉ループの中で、ごく小さなリカレントエージェントが意味のある状態依存行動を生み出せるかを検証することが目的である。
 
-## 2. Design principles
+## 2. 設計原理
 
-The model is built from two working principles:
+このモデルは、次の 2 つの作業原理から構成される。
 
-1. **Body-environment closed loop**  
-   The agent senses, acts, changes the environment, and then receives changed input.
+1. **身体-環境の閉ループ**  
+   エージェントは感知し、行為し、環境を変え、その変化した入力を再び受け取る。
 
-2. **State-dependent coherence drive**  
-   The agent's next action tendency depends on its current internal state and ongoing interaction history, rather than only on immediate input or an externally fixed goal.
+2. **状態依存のコヒーレンス駆動**  
+   エージェントの次の行動傾向は、即時入力や外部から固定された目標だけでなく、現在の内部状態と継続中の相互作用履歴にも依存する。
 
-## 3. Minimal state structure
+## 3. 最小状態構造
 
-The agent uses two core state variables:
+エージェントは次の 2 つの中核状態変数を用いる。
 
-- `h_t`: slow internal state
-- `m_t`: behavior mode state
+- `h_t`: 遅い内部状態
+- `m_t`: 行動モード状態
 
-## 3.1 Slow internal state `h_t`
+## 3.1 遅い内部状態 `h_t`
 
-`h_t` is the minimal carrier of persistence and history dependence.
+`h_t` は、持続性と履歴依存性を担う最小の保持子である。
 
-It is meant to capture effects such as:
+次のような効果を捉えることを意図している。
 
-- recent success or failure
-- depletion pressure
-- exploratory pressure
-- internal drift caused by past interaction
-- slowly changing behavioral bias
+- 直近の成功や失敗
+- 枯渇圧
+- 探索圧
+- 過去の相互作用によって生じる内部ドリフト
+- ゆっくり変化する行動バイアス
 
-`h_t` should evolve more slowly than `m_t`.
+`h_t` は `m_t` よりゆっくり進化するべきである。
 
-This variable is deliberately abstract.
-In the first PoC it is not assigned a single biological interpretation such as hunger or arousal.
-It is a compact dynamical state.
+この変数は意図的に抽象的である。
+最初の PoC では、空腹や覚醒といった単一の生物学的解釈は与えない。
+コンパクトなダイナミカル状態として扱う。
 
-## 3.2 Behavior mode `m_t`
+## 3.2 行動モード `m_t`
 
-`m_t` represents the agent's current behavioral regime.
+`m_t` は、エージェントの現在の行動レジームを表す。
 
-In the first implementation, it may correspond loosely to a small set of modes such as:
+最初の実装では、次のような小さなモード集合に緩く対応してよい。
 
-- exploit / stay
-- explore / leave
-- avoid / escape
+- 活用 / 滞在
+- 探索 / 離脱
+- 回避 / 逃避
 
-`m_t` should evolve faster than `h_t`, but still retain persistence.
+`m_t` は `h_t` より速く進化するべきだが、なお持続性を保つべきである。
 
-The project does not assume that mode must be a hard discrete state.
-A soft mode representation is acceptable and may be preferable for implementation.
+このプロジェクトは、モードが必ずしも硬い離散状態である必要はないと考える。
+ソフトなモード表現で十分であり、実装上はその方が望ましい場合もある。
 
-## 4. Input and action
+## 4. 入力と行動
 
-## 4.1 Input `i_t`
+## 4.1 入力 `i_t`
 
-`i_t` denotes body-environment input available at time `t`.
+`i_t` は、時刻 `t` に利用可能な身体-環境入力を表す。
 
-Typical components may include:
+典型的には次の成分を含みうる。
 
-- local food intensity
-- local risk intensity
-- local food gradient estimate
-- previous action
-- optional proprioceptive signal
+- 局所食物強度
+- 局所リスク強度
+- 局所食物勾配の推定
+- 前時刻の行動
+- 任意の固有感覚信号
 
-The agent should not observe the full environment state.
+エージェントは環境全体の状態を観測しない。
 
-## 4.2 Action `a_t`
+## 4.2 行動 `a_t`
 
-`a_t` denotes the action produced at time `t`.
+`a_t` は、時刻 `t` に生成される行動を表す。
 
-The first implementation should use a small action set, such as:
+最初の実装では、次のような小さな行動集合を用いるべきである。
 
-- move forward
-- turn left
-- turn right
-- pause / stay
+- 前進
+- 左旋回
+- 右旋回
+- 停止 / 滞在
 
-If continuous movement is easier, action can be represented as:
+連続移動の方が簡単であれば、行動は次のように表現してもよい。
 
-- heading change
-- movement magnitude
+- 方位変化
+- 移動量
 
-The action space should remain simple.
+行動空間は単純なままに保つ。
 
-## 5. Update equations
+## 5. 更新方程式
 
-The practical minimal model is:
+実用上の最小モデルは次の通りである。
 
 \[
 h_{t+1} = f(h_t, i_t, m_t)
@@ -108,17 +108,17 @@ m_{t+1} = g(m_t, h_t, i_t)
 a_t = \phi(m_t)
 \]
 
-This structure should be interpreted as follows:
+この構造は次のように解釈する。
 
-- `h` accumulates slow internal history
-- `m` converts current state plus input into mode dynamics
-- `a` is generated from mode state
+- `h` は遅い内部履歴を蓄積する
+- `m` は現在状態と入力をモードダイナミクスへ変換する
+- `a` はモード状態から生成される
 
-## 6. Recommended implementation form
+## 6. 推奨実装形
 
-The first implementation should use a small recurrent rate-based model.
+最初の実装では、小さなリカレント率ベースモデルを用いる。
 
-A recommended form is:
+推奨形の一例:
 
 \[
 h_{t+1} = (1-\alpha_h) h_t + \alpha_h \tanh(W_{hh} h_t + W_{hm} m_t + W_{hi} i_t + b_h)
@@ -136,82 +136,82 @@ m_t = \text{softmax}(u_t)
 a_t = W_a m_t + b_a
 \]
 
-Where:
+ここで:
 
-- `h_t` is the slow internal state vector
-- `u_t` is the pre-softmax mode activation
-- `m_t` is the behavior mode distribution
-- `a_t` is the action output
-- `alpha_h < alpha_m` so that `h` is slower than mode activation
+- `h_t` は遅い内部状態ベクトル
+- `u_t` は softmax 前のモード活性
+- `m_t` は行動モード分布
+- `a_t` は行動出力
+- `alpha_h < alpha_m` として、`h` をモード活性より遅くする
 
-## 6.1 Why this form
+## 6.1 なぜこの形か
 
-This form is preferred because it gives:
+この形を推奨する理由は、次を得られるからである。
 
-- recurrence
-- persistence
-- mode competition
-- internal-state dependence
-- simple inspectable dynamics
+- 再帰性
+- 持続性
+- モード競合
+- 内部状態依存性
+- 単純で観察可能なダイナミクス
 
-without requiring large frameworks or biologically detailed neuron models.
+しかも、大きなフレームワークや生物学的に詳細なニューロンモデルを必要としない。
 
-## 7. Minimal dimensionality
+## 7. 最小次元数
 
-The first PoC should remain small.
+最初の PoC は小さいままに保つべきである。
 
-Suggested starting dimensions:
+初期値の候補:
 
-- `h`: 1 to 4 dimensions
-- `m`: 2 to 4 modes
-- `i`: 2 to 5 dimensions depending on environment design
+- `h`: 1 から 4 次元
+- `m`: 2 から 4 モード
+- `i`: 環境設計に応じて 2 から 5 次元
 
-A good starting point might be:
+良い開始点の例:
 
-- `h` = 2 dimensions
-- `m` = 3 modes
-- `i` = 3 inputs
+- `h` = 2 次元
+- `m` = 3 モード
+- `i` = 3 入力
 
-Example interpretation:
+解釈例:
 
-- `h[0]` = depletion / dissatisfaction tendency
-- `h[1]` = exploratory drift
-- `m` = `[exploit, explore, avoid]`
+- `h[0]` = 枯渇 / 不満足傾向
+- `h[1]` = 探索ドリフト
+- `m` = `[活用, 探索, 回避]`
 
-These interpretations are optional.
-The implementation should remain flexible.
+これらの解釈は任意である。
+実装は柔軟に保つべきである。
 
-## 8. Time-scale assumption
+## 8. 時間スケール仮説
 
-A central hypothesis of the model is that behavior emerges from interaction between two time scales:
+このモデルの中核仮説は、振る舞いが次の 2 つの時間スケールの相互作用から立ち上がるという点にある。
 
-- **slow** internal drift and persistence
-- **faster** mode-level switching
+- **遅い** 内部ドリフトと持続性
+- **より速い** モードレベルの切り替え
 
-This distinction is important.
+この区別は重要である。
 
-If everything updates at the same time scale, the system may collapse toward immediate reaction.
-If internal state is too slow or too disconnected, it may become behaviorally irrelevant.
+すべてが同じ時間スケールで更新されると、系は即時反応へ崩れるかもしれない。
+内部状態が遅すぎたり切り離されすぎたりすると、行動上ほとんど意味を持たなくなるかもしれない。
 
-## 9. What counts as memory here
+## 9. ここでの記憶とは何か
 
-In this model, memory is not introduced as a separate symbolic memory module.
+このモデルでは、記憶は独立した記号的記憶モジュールとして導入しない。
 
-Instead, memory is implemented minimally as:
+代わりに、記憶は最小限の形で次として実装される。
 
-- persistence of `h_t`
-- recurrence in `m_t`
-- dependence of future state on past interaction
+- `h_t` の持続
+- `m_t` における再帰
+- 過去の相互作用への未来状態の依存
 
-This is intentional.
-The first PoC aims to test whether minimal history dependence is enough to produce interesting behavior.
+これは意図的である。
+最初の PoC では、最小限の履歴依存性だけで興味深い振る舞いが出るかを検証する。
 
-## 10. What counts as prediction here
+## 10. ここでの予測とは何か
 
-The first PoC does not require an explicit predictive model.
+最初の PoC では、明示的な予測モデルは必要ない。
 
-Prediction, if present at all in the first stage, is only implicit in the recurrence and dynamics.
-The model may later be extended with:
+最初の段階で予測があるとしても、それは再帰性とダイナミクスの中に暗黙的に含まれるだけである。
+将来的には次のような拡張もありうる。
 
 \[
 \hat{i}_{t+1} = P(h_t, m_t)
@@ -221,79 +221,85 @@ The model may later be extended with:
 e_t = i_t - \hat{i}_t
 \]
 
-but this is not required initially.
+ただし、初期段階ではこれは不要である。
 
-The first model should stay simpler unless explicit prediction is necessary to reproduce the target behavior.
+狙った振る舞いを再現するのに明示的な予測が必要だと分かるまでは、最初のモデルはより単純に保つべきである。
 
-## 11. Learning vs hand-tuned dynamics
+## 11. 学習と手調整ダイナミクス
 
-The first version does not need full learning.
+最初のバージョンでは、完全な学習は必要ない。
 
-Recommended order:
+推奨順序:
 
-1. hand-tune weights and parameters
-2. verify that interesting behavior is possible
-3. add simple parameter search if needed
-4. only later consider trainable optimization
+1. 重みとパラメータを手調整する
+2. 興味深い振る舞いが可能か確認する
+3. 必要なら単純なパラメータ探索を加える
+4. 学習による最適化はそのあとで検討する
 
-This reduces confusion between:
+これにより、次の混同を避けられる。
 
-- architecture effects
-- training effects
+- アーキテクチャの効果
+- 学習の効果
 
-The first goal is architectural validity.
+最初の目標は、アーキテクチャとして妥当かどうかである。
 
-## 12. Required qualitative properties
+## 12. 必要な定性的性質
 
-A successful model should exhibit at least some of the following:
+成功したモデルは、少なくとも次のいくつかを示すべきである。
 
-- persistence in behavioral mode
-- switching between modes under changing conditions
-- sensitivity to recent history
-- nontrivial stay/leave behavior
-- nontrivial explore/exploit behavior
-- degradation under ablations
+- 行動モードの持続性
+- 条件変化に応じたモード切り替え
+- 直近履歴への感受性
+- 自明でない滞在 / 離脱行動
+- 自明でない探索 / 活用行動
+- アブレーションによる劣化
 
-## 13. Ablation targets
+## 13. アブレーション対象
 
-The model is only meaningful if its key parts can be tested by removal.
+このモデルは、鍵となる要素を取り除いて検証できてはじめて意味をもつ。
 
-### Ablation A: remove slow internal state
-- set `h_t = 0` or bypass `h`
+### アブレーション A: 遅い内部状態の除去
 
-Expected question:
-- does the agent become overly reactive?
+- `h_t = 0` とする、または `h` をバイパスする
 
-### Ablation B: remove mode dynamics
-- bypass `m`
-- map input directly to action
+想定される問い:
 
-Expected question:
-- does persistence disappear?
+- エージェントは過度に反応的になるか？
 
-### Ablation C: weaken recurrence
-- reduce self-connections or leak persistence
+### アブレーション B: モードダイナミクスの除去
 
-Expected question:
-- does history dependence degrade?
+- `m` をバイパスする
+- 入力から直接行動へ写像する
 
-## 14. Non-claims
+想定される問い:
 
-This model does not yet claim to capture:
+- 持続性は消えるか？
 
-- full biological realism
-- worm-specific neural circuitry
-- explicit cognitive planning
-- episodic memory
-- human-like prediction
-- symbolic reasoning
+### アブレーション C: 再帰性の弱化
 
-It is a proto-agent model, not a full cognitive architecture.
+- 自己結合を減らす、またはリーク持続を弱める
 
-## 15. Current working hypothesis
+想定される問い:
 
-The working hypothesis of the model is:
+- 履歴依存性は劣化するか？
 
-> A small recurrent system with a slow internal state and a behavior mode variable may be sufficient to produce the earliest useful form of state-dependent enactive agency in a closed-loop environment.
+## 14. 非主張
 
-This hypothesis is what the first PoC is meant to test.
+このモデルは、現時点では次を捉えたとは主張しない。
+
+- 完全な生物学的リアリズム
+- 線虫固有の神経回路
+- 明示的な認知的計画
+- エピソード記憶
+- 人間のような予測
+- 記号推論
+
+これは完全な認知アーキテクチャではなく、原初的エージェントモデルである。
+
+## 15. 現在の作業仮説
+
+このモデルの作業仮説は次の通りである。
+
+> 遅い内部状態と行動モード変数をもつ小さなリカレント系は、閉ループ環境における状態依存的なエナクティブ・エージェンシーの最初の有用な形を生み出すのに十分かもしれない。
+
+最初の PoC は、この仮説を検証するためのものである。

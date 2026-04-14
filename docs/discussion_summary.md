@@ -1,176 +1,175 @@
-# Discussion Summary: Minimal Enactive Agent
+# 議論の要約: 最小エナクティブエージェント
 
-## 1. Background
+## 1. 背景
 
-This project did not start from a standard AI question such as “how to optimize behavior for a fixed goal.”
-It started from a different question:
+このプロジェクトは、「固定された目標に対してどう行動を最適化するか」という標準的な AI の問いから始まったわけではない。
+出発点は別の問いだった。
 
-> When an external goal is not explicitly given, what does a system internally optimize in order to select the next action candidate?
+> 外部目標が明示的に与えられていないとき、システムは次の行動候補を選ぶために、内部で何を最適化しているのか？
 
-This was motivated by a very ordinary human experience:
+その動機は、ごく日常的な人間の経験にある。
 
-> “What should I do today?”
+> 「今日は何をしようか？」
 
-This is not just goal-directed planning.
-It is closer to the emergence of a goal itself.
+これは単なる目標志向の計画ではない。
+むしろ、目標そのものの立ち上がりに近い。
 
-The hypothesis developed through discussion is that this kind of behavior requires more than explicit reasoning.
-It requires a mechanism that integrates:
+議論を通じて形になった仮説は、この種の振る舞いには明示的な推論以上のものが必要だということである。
+必要なのは、次を統合するメカニズムである。
 
-- current bodily and environmental conditions
-- internal state
-- past history
-- tendencies and habits
-- implicit valuation
-- action readiness
-- context-dependent behavioral switching
+- 現在の身体状態と環境条件
+- 内部状態
+- 過去の履歴
+- 傾向と習慣
+- 暗黙の価値づけ
+- 行動準備性
+- 文脈依存の行動切り替え
 
-This led to the idea that the problem is not best framed as generic intelligence, but as a minimal form of **biological agency**.
-
----
-
-## 2. Shift in framing
-
-At first, the discussion used terms such as:
-
-- intrinsic value signal
-- minimal intelligence
-- prediction
-- memory
-- mode switching
-- internal state
-
-However, these concepts overlapped and were not at the same level of abstraction.
-
-The discussion gradually converged on a cleaner formulation.
-
-### Final high-level framing
-
-Minimal biological agency can be understood through two core concepts:
-
-1. **Body-environment closed loop**
-2. **State-dependent coherence drive**
+このことから、問題は一般的な知能として捉えるより、**生物的エージェンシー** の最小形として捉える方が適切だという考えに至った。
 
 ---
 
-## 3. Core concepts
+## 2. 枠組みの転換
 
-### 3.1 Body-environment closed loop
+当初の議論では、次のような語を使っていた。
 
-The system is not treated as a disembodied optimizer.
-It exists in a loop:
+- 内在的価値信号
+- 最小知能
+- 予測
+- 記憶
+- モード切り替え
+- 内部状態
 
-- it senses
-- it acts
-- the environment changes
-- the changed environment alters future input
+しかし、これらの概念は互いに重なっており、抽象化の水準も揃っていなかった。
 
-Agency is therefore not an internal computation alone.
-It is a dynamical relation between body and environment.
+議論は徐々に、より整理された定式化へ収束した。
 
-### 3.2 State-dependent coherence drive
+### 最終的な高水準の枠組み
 
-When an external goal is not fixed, the system still tends to generate a “next action.”
-This is not modeled as generic reward maximization.
+最小限の生物的エージェンシーは、次の 2 つの中核概念で理解できる。
 
-Instead, the system is assumed to shift toward action tendencies that are more coherent with its current internal state and ongoing body-environment relation.
-
-“Coherence” here does **not** mean logical consistency.
-It means something closer to:
-
-- not collapsing
-- not getting stuck
-- maintaining viability
-- preserving the possibility of continued interaction
-- balancing local stability and continued exploration
-
-A more operational interpretation is:
-
-> coherence = maintaining viability while preserving exploratory continuity
+1. **身体-環境の閉ループ**
+2. **状態依存のコヒーレンス駆動**
 
 ---
 
-## 4. Reinterpretation of value judgment
+## 3. 中核概念
 
-Under this framework, value judgment is not treated as an independent primitive.
+### 3.1 身体-環境の閉ループ
 
-Instead:
+システムは、身体を持たない最適化器として扱わない。
+それは次のループの中にある。
 
-> Value judgment is the local ranking of action candidates produced by state-dependent coherence drive.
+- 感知する
+- 行為する
+- 環境が変わる
+- 変化した環境が将来入力を変える
 
-In other words:
+したがって、エージェンシーは内部計算だけではない。
+身体と環境のあいだのダイナミカルな関係である。
 
-- the closed loop is the arena
-- coherence drive is the principle
-- value judgment is the local expression of that principle during action selection
+### 3.2 状態依存のコヒーレンス駆動
 
-This avoids reducing the problem too early to a single scalar reward signal.
+外部目標が固定されていなくても、システムはなお「次の行動」を生成しようとする。
+これは一般的な報酬最大化としてはモデル化しない。
 
----
+その代わり、システムは現在の内部状態と、進行中の身体-環境関係により整合的な行動傾向へと移っていく、と仮定する。
 
-## 5. Why prediction and memory appeared in the discussion
+ここでいう「コヒーレンス」は、論理的一貫性を意味しない。
+むしろ次のような意味に近い。
 
-The project then turned to the question:
+- 崩壊しないこと
+- 行き詰まらないこと
+- 存続可能性を維持すること
+- 相互作用を継続できる可能性を保つこと
+- 局所的安定性と継続的探索のバランスをとること
 
-> Are prediction and memory necessary for biological agency to become more sophisticated?
+より操作的には、次のように読める。
 
-The discussion reached a layered answer.
-
-### 5.1 At minimal levels
-
-In worms, plants, or even simpler systems, what matters first may not be explicit prediction in a human-like sense.
-What matters more fundamentally is:
-
-- history-dependent state update
-- persistence
-- adaptive switching
-- environment-coupled regulation
-
-In such systems, prediction and memory may exist only in weak or implicit forms.
-
-### 5.2 At human levels
-
-For human-like cognition, prediction and memory appear to be indispensable.
-
-Not necessarily in the form of explicit symbolic modules,
-but at least as:
-
-- persistence of past influence on present state
-- anticipatory adjustment of action
-- reuse of past structure for future construction
-- comparison of possible future states
-
-Thus:
-
-- **minimal agency** may exist without rich human-like prediction/memory
-- **human-like cognition** almost certainly cannot
+> コヒーレンス = 存続可能性を維持しつつ、探索の連続性を保つこと
 
 ---
 
-## 6. Continuous but non-identical relation across organisms
+## 4. 価値判断の再解釈
 
-The discussion considered worms, slime molds, plants, and humans.
+この枠組みでは、価値判断は独立した原始的要素として扱わない。
 
-The resulting view is:
+その代わり:
 
-- there is likely a **continuity of principle**
-- but not an identity of mechanism
+> 価値判断とは、状態依存のコヒーレンス駆動によって生成される行動候補の局所的順位づけである。
 
-For example:
+言い換えると:
 
-- worms likely have history-dependent state transitions and weak anticipatory structure
-- humans have layered memory, distributed prediction, reconstruction, and counterfactual comparison
+- 閉ループが舞台である
+- コヒーレンス駆動が原理である
+- 価値判断は、その原理が行動選択の際に局所的に現れた表現である
 
-So the project should not try to copy worms as worms.
-It should try to identify the **essential mechanism** that remains meaningful across scales.
+これにより、問題を早い段階で単一のスカラー報酬信号へ還元することを避けられる。
 
 ---
 
-## 7. Minimal formal model
+## 5. なぜ予測と記憶が議論に現れたのか
 
-The discussion gradually converged on a compact practical form for the first implementation.
+その後、プロジェクトは次の問いへ向かった。
 
-### Practical minimal form
+> 生物的エージェンシーがより高度になるには、予測と記憶が必要なのか？
+
+議論の到達点は、層状の答えだった。
+
+### 5.1 最小レベルでは
+
+線虫、植物、あるいはもっと単純な系では、まず重要なのは人間のような明示的予測ではないかもしれない。
+より基礎的に重要なのは次である。
+
+- 履歴依存の状態更新
+- 持続性
+- 適応的切り替え
+- 環境結合的な調整
+
+そのような系では、予測や記憶は弱い、あるいは暗黙的な形でしか存在しないかもしれない。
+
+### 5.2 人間レベルでは
+
+人間のような認知では、予測と記憶は不可欠に見える。
+
+必ずしも明示的な記号モジュールの形でなくても、少なくとも次の形では必要である。
+
+- 過去の影響が現在状態に残ること
+- 行動の予期的調整
+- 過去の構造を再利用して未来を構成すること
+- 複数の可能な未来状態を比較すること
+
+したがって:
+
+- **最小エージェンシー** は豊かな人間的予測 / 記憶なしでも成立しうる
+- **人間的認知** はほぼ確実にそれなしでは成立しない
+
+---
+
+## 6. 生物間での連続性と非同一性
+
+議論では、線虫、粘菌、植物、人間を比較した。
+
+そこで得られた見方は次の通りである。
+
+- **原理の連続性** はおそらくある
+- しかし **メカニズムの同一性** があるわけではない
+
+たとえば:
+
+- 線虫には、履歴依存の状態遷移と弱い予期構造がありそうだ
+- 人間には、層状の記憶、分散した予測、再構成、反事実比較がある
+
+したがって、このプロジェクトは線虫をそのまま模倣しようとすべきではない。
+スケールをまたいでも意味を保つ **本質的メカニズム** を特定すべきである。
+
+---
+
+## 7. 最小形式モデル
+
+議論は徐々に、最初の実装に向けたコンパクトで実用的な形へ収束した。
+
+### 実用上の最小形
 
 $$
 \begin{aligned}
@@ -180,193 +179,194 @@ a_t &= \phi(m_t)
 \end{aligned}
 $$
 
-Where:
+ここで:
 
-- `h_t`: slow internal state
-- `m_t`: behavior mode
-- `i_t`: body-environment input
-- `a_t`: action
+- `h_t`: 遅い内部状態
+- `m_t`: 行動モード
+- `i_t`: 身体-環境入力
+- `a_t`: 行動
 
-### Interpretation
+### 解釈
 
-This form is meant to be the smallest practical expression of the project's current hypothesis.
+この形は、現時点の仮説を表す最小の実用的表現として意図されている。
 
-- `h_t` carries slow persistence, internal bias, and history dependence
-- `m_t` represents the current behavioral regime or action tendency
-- `i_t` connects the agent to the body-environment loop
-- `a_t` is generated from the current mode state
+- `h_t` は遅い持続性、内部バイアス、履歴依存性を担う
+- `m_t` は現在の行動レジーム、または行動傾向を表す
+- `i_t` はエージェントを身体-環境ループにつなぐ
+- `a_t` は現在のモード状態から生成される
 
-The update functions `f` and `g` are the computational locus of what we have called **state-dependent coherence drive**.
+更新関数 `f` と `g` は、ここで **状態依存のコヒーレンス駆動** と呼んでいるものの計算上の中心である。
 
-In this framing:
+この枠組みでは:
 
-- memory is not a separate symbolic module
-- prediction is not necessarily explicit
-- value judgment is not a standalone scalar
+- 記憶は独立した記号モジュールではない
+- 予測は必ずしも明示的ではない
+- 価値判断は独立したスカラーではない
 
-Instead, persistence, switching, and action selection are all treated as consequences of recurrent state dynamics within a closed loop.
+その代わり、持続、切り替え、行動選択はすべて、閉ループ内の再帰的状態ダイナミクスの帰結として扱われる。
 
-### Why this form was preferred
+### なぜこの形が好まれたか
 
-This formulation was preferred because it is:
+この定式化が選ばれた理由は、次の性質を持つからである。
 
-- compact
-- interpretable
-- easy to implement
-- easy to ablate
-- flexible enough to support later extensions
+- コンパクト
+- 解釈しやすい
+- 実装しやすい
+- アブレーションしやすい
+- 将来の拡張にも十分柔軟
 
-It is not intended as a full account of intelligence.
-It is intended as the smallest useful formal core for testing **minimal enactive agency**.
+これは知能全体の説明を意図したものではない。
+**最小限のエナクティブ・エージェンシー** を検証するための、最小で有用な形式的中核として意図されている。
 
-### Compressed view
+### 圧縮した見方
 
-At the most compressed level, the model says:
+最も圧縮して言えば、このモデルは次を述べている。
 
-> an agent maintains an internal state, updates it through closed-loop interaction, and generates action through mode dynamics shaped by that state
+> エージェントは内部状態を維持し、閉ループ相互作用を通じてそれを更新し、その状態に形作られたモードダイナミクスを通じて行動を生成する
 
-This is the current minimal formal hypothesis of the project.
-
----
-
-## 8. Why this is not yet “human intelligence”
-
-A key point from the discussion:
-
-This minimal module may be a good **proto-agent** or **proto-cognitive unit**,
-but it is probably not sufficient for human-like intelligence.
-
-Human cognition likely requires additional structure such as:
-
-- multi-timescale hierarchy
-- shared latent state across subsystems
-- re-usable and reconstructive memory
-- explicit or implicit comparison of alternative futures
-- counterfactual evaluation
-- long-range integration across modalities and contexts
-
-So:
-
-> the minimal model is a candidate ancestor-form, not a full account of human intelligence
+これが、このプロジェクトの現在の最小形式仮説である。
 
 ---
 
-## 9. Relation to current ANN / Transformer models
+## 8. なぜこれはまだ「人間知能」ではないのか
 
-The discussion also asked whether modern Transformers already possess this structure.
+議論から得られた重要な点:
 
-The conclusion was:
+この最小モジュールは、良い **原初的エージェント** または **原初的認知単位** にはなりうるが、おそらく人間のような知能には十分ではない。
 
-- Transformers do implement a form of context-dependent state update
-- but they do **not** intrinsically implement biological agency in the above sense
+人間の認知には、おそらく次のような追加構造が必要である。
 
-Main reasons:
+- 多時間スケール階層
+- サブシステム間で共有される潜在状態
+- 再利用可能で再構成的な記憶
+- 代替未来の明示的または暗黙的比較
+- 反事実評価
+- モダリティや文脈をまたぐ長距離統合
 
-- no intrinsic body-environment closed loop by default
-- no explicit slow internal viability-oriented state
-- no clear distinction between local mismatch and global arbitration
-- no endogenous coherence drive comparable to biological regulation
+したがって:
 
-Therefore, Transformers may contain a **partial formal resemblance**,
-but they do not yet realize the intended structure.
-
----
-
-## 10. Implementation direction
-
-The project should begin with a small proof of concept rather than a large benchmark.
-
-### Recommended first target
-
-A minimal embodied agent with:
-
-- a slow internal state `h`
-- a behavior mode variable `m`
-- a simple closed-loop environment
-
-### Recommended environment
-
-A simple 2D foraging environment with:
-
-- depleting food patch
-- sparse risk signal
-- local sensing only
-- no fixed external goal state
-
-### Evaluation should focus on:
-
-- stay / leave behavior
-- explore / exploit switching
-- history dependence
-- effect of ablations
-- emergence of mode persistence and switching
-
-The point is not benchmark score.
-The point is to show that the added structure produces behaviors that cannot be reduced to immediate stimulus-response.
+> この最小モデルは祖型候補であって、人間知能の完全説明ではない
 
 ---
 
-## 11. Working research stance
+## 9. 現在の ANN / Transformer モデルとの関係
 
-The project should avoid getting trapped in broad philosophical disputes such as:
+議論では、現代の Transformer がすでにこの構造を持っているのかも問われた。
 
-- what exactly counts as intelligence
-- whether plants are intelligent
-- whether slime molds “really think”
+結論は次の通りである。
 
-Instead, a more useful stance is:
+- Transformers は、文脈依存の状態更新の一形態を実装している
+- しかし、上で述べた意味での生物的エージェンシーを本質的に実装しているわけではない
 
-> build the minimal mechanism of biological agency first, then ask what level of cognition it supports
+主な理由:
 
-This suggests using working terms such as:
+- デフォルトでは身体-環境の内在的閉ループがない
+- 存続可能性志向の明示的な遅い内部状態がない
+- 局所的ミスマッチと大域的仲裁の明確な区別がない
+- 生物的調整に相当する内因的コヒーレンス駆動がない
 
-- minimal enactive agency
-- biological agency
-- coherence-maintaining control
-- state-dependent closed-loop adaptation
-
-rather than making strong claims too early.
+したがって、Transformer には **部分的な形式的類似** はありうるが、意図された構造そのものではない。
 
 ---
 
-## 12. Current distilled thesis
+## 10. 実装の方向性
 
-At the current stage, the most distilled statement is:
+プロジェクトは、大規模ベンチマークではなく、小さな PoC から始めるべきである。
 
-> Minimal biological agency is the capacity to generate the next action through state-dependent coherence drive within a body-environment closed loop.
+### 推奨される最初の対象
 
-And the practical implementation hypothesis is:
+次をもつ最小の身体化エージェント:
 
-> A minimal agent may only need a slow internal state, a behavior mode variable, and a closed-loop environment to exhibit the earliest meaningful form of state-dependent agency.
+- 遅い内部状態 `h`
+- 行動モード変数 `m`
+- 単純な閉ループ環境
+
+### 推奨環境
+
+次を備えた単純な 2D 採餌環境:
+
+- 枯渇する食物パッチ
+- 疎なリスク信号
+- 局所センシングのみ
+- 固定された外部ゴール状態なし
+
+### 評価で注目すべき点
+
+- 滞在 / 離脱行動
+- 探索 / 活用の切り替え
+- 履歴依存性
+- アブレーションの効果
+- モード持続と切り替えの出現
+
+重要なのはベンチマークスコアではない。
+追加した構造が、即時の刺激-反応では説明できない行動を生むことを示すことである。
 
 ---
 
-## 13. Open questions
+## 11. 現在の研究姿勢
 
-The discussion left several important open questions.
+このプロジェクトは、次のような広い哲学的論争に閉じ込められるべきではない。
 
-### Conceptual
-- Is “coherence” best defined as viability maintenance, exploratory continuity, or something more precise?
-- At what point does history-dependent state update become genuine prediction?
-- At what point does minimal agency become cognition?
+- 何を正確に知能と呼ぶか
+- 植物は知的か
+- 粘菌は「本当に考えている」のか
 
-### Computational
-- Is the two-variable model sufficient to produce robust mode switching?
-- Is explicit prediction necessary in the first implementation?
-- Can local mismatch and global arbitration be added later without losing minimality?
+より有用な姿勢は次である。
 
-### Comparative
-- Which aspects of worm behavior are best seen as state transition rather than prediction?
-- Which features of human cognition require qualitative additions beyond the minimal module?
+> まず生物的エージェンシーの最小メカニズムを作り、そのあとでそれがどの水準の認知を支えられるかを問う
+
+このことは、次のような作業語を使うことを示唆する。
+
+- 最小限のエナクティブ・エージェンシー
+- 生物的エージェンシー
+- コヒーレンス維持的制御
+- 状態依存の閉ループ適応
+
+強い主張を早い段階で置くのではなく、こうした作業語を使う。
 
 ---
 
-## 14. Immediate next step
+## 12. 現在の凝縮されたテーゼ
 
-The immediate next step is not to solve cognition in general.
+現段階で最も凝縮された表現は次の通りである。
 
-It is to implement a small closed-loop proof of concept that tests this claim:
+> 最小限の生物的エージェンシーとは、身体-環境の閉ループの中で、状態依存のコヒーレンス駆動を通じて次の行動を生成する能力である。
 
-> A minimal internal state plus behavior mode dynamics can generate coherent, history-dependent action selection without relying on an externally fixed goal.
+そして実装上の仮説は次の通りである。
 
-That proof of concept is the purpose of this repository.
+> 最小エージェントは、遅い内部状態、行動モード変数、閉ループ環境だけで、状態依存エージェンシーの最初の意味ある形を示せるかもしれない。
+
+---
+
+## 13. 未解決の問い
+
+議論には、いくつかの重要な未解決問題が残っている。
+
+### 概念面
+
+- 「コヒーレンス」は、存続可能性維持、探索の連続性、あるいはもっと精密な何かとして定義すべきか？
+- 履歴依存の状態更新は、どの時点で真正な予測になるのか？
+- 最小エージェンシーは、どの時点で認知になるのか？
+
+### 計算面
+
+- 2 変数モデルで、頑健なモード切り替えは十分に生じるか？
+- 最初の実装で明示的予測は必要か？
+- 局所的ミスマッチと大域的仲裁を、最小性を失わずあとから追加できるか？
+
+### 比較面
+
+- 線虫行動のどの側面は、予測より状態遷移として見るのが適切か？
+- 人間認知のどの特徴は、最小モジュールを超える質的追加を必要とするか？
+
+---
+
+## 14. 直近の次の一歩
+
+直近の次の一歩は、一般的な認知を解くことではない。
+
+まず、次の主張を検証する小さな閉ループ PoC を実装することである。
+
+> 最小限の内部状態と行動モードダイナミクスがあれば、外部から固定された目標に依存せずに、整合的で履歴依存的な行動選択を生成できる。
+
+それが、このリポジトリの目的である。

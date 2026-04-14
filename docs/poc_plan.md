@@ -1,74 +1,76 @@
-# PoC Plan: Minimal Enactive Agent
+# PoC 計画: 最小エナクティブエージェント
 
-## 1. Purpose
+## 1. 目的
 
-Build a first proof of concept for a minimal embodied agent whose behavior emerges from:
+次の要素から振る舞いが立ち上がる、最小限の身体化エージェントの最初の PoC を構築する。
 
-- a **body-environment closed loop**
-- **state-dependent coherence dynamics**
+- **身体-環境の閉ループ**
+- **状態依存のコヒーレンス・ダイナミクス**
 
-The point is not to maximize benchmark reward.
-The point is to test whether a very small internal architecture can generate meaningful, history-dependent action selection.
+目的はベンチマーク報酬を最大化することではない。
+ごく小さな内部アーキテクチャで、意味のある履歴依存的な行動選択が生じるかを検証することが目的である。
 
-## 2. Main research question
+## 2. 主たる研究課題
 
-> Can a minimal agent with a slow internal state and a behavior mode variable produce coherent closed-loop behavior without relying on a fixed external goal?
+> 遅い内部状態と行動モード変数をもつ最小エージェントは、固定された外部目標に依存せずに、整合的な閉ループ行動を生み出せるか？
 
-More concretely:
+より具体的には:
 
-- Can the agent switch between staying and leaving?
-- Can it shift between exploration and exploitation?
-- Can current behavior depend on past interaction history?
-- Do these behaviors disappear under ablation?
+- エージェントは滞在と離脱を切り替えられるか？
+- 探索と活用を切り替えられるか？
+- 現在の振る舞いは過去の相互作用履歴に依存しうるか？
+- これらの振る舞いはアブレーションで消失するか？
 
-## 3. Minimal agent design
+## 3. 最小エージェント設計
 
-### State variables
+### 状態変数
 
-The first PoC uses two core variables:
+最初の PoC では、次の 2 つの中核変数を用いる。
 
-- `h_t`: slow internal state
-- `m_t`: behavior mode variable
+- `h_t`: 遅い内部状態
+- `m_t`: 行動モード変数
 
-### Interpretation
+### 解釈
 
-#### `h_t` — slow internal state
-Represents slowly varying internal bias, such as:
+#### `h_t` - 遅い内部状態
 
-- persistence of recent experience
-- depletion pressure
-- exploratory pressure
-- internal tendency shaped by history
+次のような、ゆっくり変化する内部バイアスを表す。
 
-This is not yet meant to model a specific biological variable.
-It is a compact state carrier.
+- 直近の経験の持続
+- 枯渇圧
+- 探索圧
+- 履歴によって形作られる内的傾向
 
-#### `m_t` — behavior mode
-Represents the current behavioral regime, for example:
+これは、まだ特定の生物学的変数を直接モデル化するものではない。
+コンパクトな状態保持子として扱う。
 
-- exploit / stay
-- explore / leave
-- avoid / escape
+#### `m_t` - 行動モード
 
-The first implementation may use either:
+現在の行動レジームを表す。たとえば:
 
-- a continuous vector with soft competition, or
-- a small discrete-like softmax mode state
+- 活用 / 滞在
+- 探索 / 離脱
+- 回避 / 逃避
 
-### Action output
+最初の実装では、次のいずれかを用いてよい。
 
-Actions may be minimal, for example:
+- ソフトな競合をもつ連続ベクトル
+- 小さな離散状態に近い softmax モード状態
 
-- move forward
-- turn left
-- turn right
-- stay / pause
+### 行動出力
 
-The exact set should remain small.
+行動は最小限でよい。たとえば:
 
-## 4. Minimal model form
+- 前進
+- 左旋回
+- 右旋回
+- 停止 / 待機
 
-A practical minimal update structure:
+正確な行動集合は小さいまま保つべきである。
+
+## 4. 最小モデルの形
+
+実用的な最小更新構造:
 
 \[
 h_{t+1} = f(h_t, i_t, m_t)
@@ -82,214 +84,232 @@ m_{t+1} = g(m_t, h_t, i_t)
 a_t = \phi(m_t)
 \]
 
-Where:
+ここで:
 
-- `i_t` is body-environment input
-- `a_t` is action
+- `i_t` は身体-環境入力
+- `a_t` は行動
 
-### Recommended first implementation form
+### 推奨する最初の実装形
 
-Use a small recurrent rate-based model.
+小さなリカレント率ベースモデルを使う。
 
-Example structure:
+例:
 
-- `h` updated with a slow leak
-- `m` updated with a faster leak
-- `m` converted to action preference
-- no explicit prediction module at first
-- no heavy learning framework at first
+- `h` は遅いリーク付きで更新する
+- `m` はより速いリーク付きで更新する
+- `m` を行動選好へ変換する
+- 初期段階では明示的な予測モジュールは入れない
+- 初期段階では重い学習フレームワークは使わない
 
-## 5. Environment
+## 5. 環境
 
-## 5.1 First environment: depleting food patch
+## 5.1 最初の環境: 枯渇する食物パッチ
 
-A 2D world containing:
+次を含む 2D 世界:
 
-- one main food patch
-- food depletion when the agent remains nearby
-- sparse risk signal
-- optional weak background food elsewhere
+- 1 つの主要な食物パッチ
+- エージェントが近くに留まると食物が枯渇する
+- 疎なリスク信号
+- ほかの場所には任意で弱い背景食物
 
-### Why this environment
+### なぜこの環境か
 
-It directly probes the behaviors of interest:
+この環境は、関心のある振る舞いを直接検査できる。
 
-- when to stay
-- when to leave
-- when to switch mode
-- whether history matters
+- いつ留まるか
+- いつ離れるか
+- いつモードを切り替えるか
+- 履歴が重要かどうか
 
-It avoids overfitting the project to standard goal-reaching tasks.
+標準的なゴール到達課題にプロジェクトを引きずられにくい。
 
-## 5.2 Observation
+## 5.2 観測
 
-The agent should receive only local or near-local information:
+エージェントが受け取る情報は、局所または準局所に限定するべきである。
 
-- local food intensity
-- local risk intensity
-- possibly local gradient estimate
-- optional proprioceptive or previous-action signal
+- 局所食物強度
+- 局所リスク強度
+- 必要なら局所勾配推定
+- 任意で固有感覚や前時刻の行動信号
 
-The agent should not receive the full global map.
+エージェントには全体マップを与えない。
 
-## 5.3 Environment update
+## 5.3 環境更新
 
-The environment should update after each action:
+環境は各行動のあとに更新する。
 
-- food is partially consumed or depleted
-- the agent position changes
-- risk may fluctuate or remain sparse
-- the resulting observation becomes the next input
+- 食物は部分的に消費または枯渇する
+- エージェント位置が変わる
+- リスクは変動してもよいし、疎なままでもよい
+- その結果の観測が次の入力になる
 
-This preserves the body-environment closed loop.
+これにより身体-環境の閉ループが保たれる。
 
-## 6. Implementation constraints
+## 6. 実装上の制約
 
-The first PoC should be intentionally small.
+最初の PoC は、意図的に小さく保つ。
 
-### Preferred stack
+### 推奨スタック
 
 - Python
 - numpy
 - matplotlib
-- pyyaml if config files are used
+- 設定ファイルを使うなら pyyaml
 
-### Avoid for now
+### 今は避けるもの
 
-- large RL frameworks
-- deep learning libraries unless clearly needed
-- complicated training pipelines
-- benchmark-heavy engineering
+- 大規模 RL フレームワーク
+- 明確な必要性がない深層学習ライブラリ
+- 複雑な学習パイプライン
+- ベンチマーク偏重の実装
 
-The first version should be inspectable and easy to modify.
+最初のバージョンは、観察可能で変更しやすいものにする。
 
-## 7. Evaluation
+## 7. 評価
 
-## 7.1 Primary evaluation questions
+## 7.1 主な評価問い
 
-We are not mainly asking “How high is reward?”
-We are asking:
+主に問いたいのは「報酬がどれだけ高いか」ではない。
+問いたいのは次である。
 
-- Does internal state make a behavioral difference?
-- Does mode structure make a behavioral difference?
-- Does the system show nontrivial persistence and switching?
-- Does it behave differently under different histories despite similar immediate input?
+- 内部状態は行動差を生むか？
+- モード構造は行動差を生むか？
+- 系は自明でない持続や切り替えを示すか？
+- 直近入力が似ていても、履歴が異なれば違う振る舞いをするか？
 
-## 7.2 Suggested metrics
+## 7.2 推奨指標
 
-### Behavioral
-- average patch residence time
-- leave probability as a function of local depletion
-- frequency of mode switching
-- duration of mode persistence
-- path tortuosity / exploration spread
-- time spent near risk vs food
+### 行動指標
 
-### History dependence
-- whether current action distribution depends on recent interaction history
-- whether leave behavior changes after prolonged low yield
-- whether behavior differs under matched current observations but different recent pasts
+- 平均パッチ滞在時間
+- 局所枯渇に対する離脱確率
+- モード切り替え頻度
+- モード持続時間
+- 経路の曲がり具合 / 探索の広がり
+- リスク付近と食物付近にいた時間
 
-### Robustness
-- behavior under input noise
-- sensitivity to parameter changes
+### 履歴依存性
 
-## 7.3 Ablation tests
+- 現在の行動分布が、直近の相互作用履歴に依存するか
+- 低収量が長く続いたあとで離脱行動が変化するか
+- 現在観測が一致していても、最近の過去が違えば行動が変わるか
 
-These are essential.
+### 頑健性
 
-### Full model
-- slow internal state `h`
-- mode variable `m`
+- 入力ノイズ下での振る舞い
+- パラメータ変化への感度
 
-### Ablation A: no internal state
-- remove `h`
-- keep only immediate input and mode dynamics
+## 7.3 アブレーション試験
 
-Question:
-- does behavior collapse toward stimulus-response?
+これは必須である。
 
-### Ablation B: no mode variable
-- remove `m`
-- act directly from internal state and input
+### 完全モデル
 
-Question:
-- does persistence / switching degrade?
+- 遅い内部状態 `h`
+- モード変数 `m`
 
-### Ablation C: reduced recurrence
-- weaken or remove self-recurrence
+### アブレーション A: 内部状態なし
 
-Question:
-- does history dependence disappear?
+- `h` を除去する
+- 即時入力とモードダイナミクスだけを残す
 
-## 8. Expected outcome of first PoC
+問い:
 
-Success does **not** require biological realism or high task performance.
+- 振る舞いは刺激-反応に近づいて崩れるか？
 
-A successful first PoC should show at least some of the following:
+### アブレーション B: モード変数なし
 
-- state-dependent stay/leave behavior
-- nontrivial explore/exploit switching
-- mode persistence over time
-- history-dependent behavior not reducible to immediate observation
-- clear degradation under ablations
+- `m` を除去する
+- 内部状態と入力から直接行動する
 
-## 9. Deliverables for the first coding phase
+問い:
 
-### Core code
-- `src/env.py` — minimal 2D foraging environment
-- `src/agent.py` — minimal 2-variable agent
-- `src/run_simulation.py` — run one simulation
-- `src/eval.py` — compute simple metrics
-- `src/viz.py` — trajectory and state visualization
+- 持続や切り替えは劣化するか？
 
-### Configuration
+### アブレーション C: 再帰性の縮小
+
+- 自己再帰を弱めるか除去する
+
+問い:
+
+- 履歴依存性は消えるか？
+
+## 8. 最初の PoC に期待する結果
+
+成功は、生物学的リアリズムや高い課題性能を意味しない。
+
+成功した最初の PoC は、少なくとも次のいくつかを示すべきである。
+
+- 状態依存の滞在 / 離脱行動
+- 自明でない探索 / 活用の切り替え
+- 時間的なモード持続
+- 即時観測だけでは還元できない履歴依存行動
+- アブレーションによる明確な劣化
+
+## 9. 最初の実装フェーズの成果物
+
+### コアコード
+
+- `src/env.py` - 最小 2D 採餌環境
+- `src/agent.py` - 最小 2 変数エージェント
+- `src/run_simulation.py` - 1 回のシミュレーション実行
+- `src/eval.py` - 単純な指標の計算
+- `src/viz.py` - 軌跡と状態の可視化
+
+### 設定
+
 - `configs/base.yaml`
 - `configs/ablation_no_h.yaml`
 - `configs/ablation_no_m.yaml`
 
-### Documentation
-- update `README.md`
-- add model notes to `docs/model_spec.md`
-- add experiment notes to `docs/experiment_plan.md`
+### ドキュメント
 
-## 10. Recommended development order
+- `README.md` を更新する
+- モデルメモを `docs/model_spec.md` に追加する
+- 実験メモを `docs/experiment_plan.md` に追加する
 
-### Phase 1
-Implement the environment only.
+## 10. 推奨する開発順序
 
-### Phase 2
-Implement a fixed hand-tuned agent with the two-state update.
+### フェーズ 1
 
-### Phase 3
-Visualize trajectories, modes, and internal state.
+まず環境だけを実装する。
 
-### Phase 4
-Run ablations.
+### フェーズ 2
 
-### Phase 5
-Only after that, consider parameter search or learning.
+2 状態更新をもつ固定の手調整エージェントを実装する。
 
-## 11. Non-goals for the first PoC
+### フェーズ 3
 
-The first PoC should **not** attempt to do all of the following:
+軌跡、モード、内部状態を可視化する。
 
-- full biological realism
-- full worm behavior reproduction
-- human-like cognition
-- explicit world modeling
-- large-scale memory systems
-- full predictive coding implementation
-- complex multi-agent interaction
+### フェーズ 4
 
-These may become later directions, but they are not required for the first proof of concept.
+アブレーションを実行する。
 
-## 12. Working stance
+### フェーズ 5
 
-The project is trying to identify an essential mechanism, not to imitate a specific organism directly.
+そのあとではじめて、パラメータ探索や学習を検討する。
 
-The current working stance is:
+## 11. 最初の PoC における非目標
 
-> If a tiny recurrent agent with a slow internal state and mode dynamics can already produce coherent closed-loop behavior, then it may capture a meaningful proto-form of enactive agency.
+最初の PoC では、意図的に次のすべてを同時に目指さない。
 
-This is the claim the first PoC should test.
+- 完全な生物学的リアリズム
+- 線虫行動の完全再現
+- 人間的認知
+- 明示的な世界モデル
+- 大規模な記憶システム
+- 完全な予測符号化 (predictive coding) 実装
+- 複雑なマルチエージェント相互作用
+
+これらは将来的な方向にはなりうるが、最初の PoC には不要である。
+
+## 12. 現在の立場
+
+このプロジェクトが特定の生物を直接模倣したいのではなく、本質的なメカニズムを特定したいという立場である。
+
+現在の作業仮説は次の通り。
+
+> 遅い内部状態とモードダイナミクスをもつ小さなリカレントエージェントが、それだけで整合的な閉ループ行動を生み出せるなら、それはエナクティブなエージェンシーの意味ある原初形を捉えているかもしれない。
+
+これが、最初の PoC で検証すべき主張である。

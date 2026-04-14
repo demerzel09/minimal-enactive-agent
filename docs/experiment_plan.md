@@ -1,333 +1,359 @@
-# Experiment Plan: Minimal Enactive Agent
+# 実験計画: 最小エナクティブエージェント
 
-## 1. Purpose
+## 1. 目的
 
-This document defines the first experiments for `minimal-enactive-agent`.
+この文書は、`minimal-enactive-agent` における最初の実験を定義する。
 
-The aim is not to optimize benchmark performance.
-The aim is to determine whether the minimal architecture produces meaningful closed-loop, state-dependent behavior that cannot be reduced to immediate stimulus-response.
+目的はベンチマーク性能を最適化することではない。
+最小アーキテクチャが、即時の刺激-反応へ還元できない、意味のある閉ループかつ状態依存の振る舞いを生み出すかを確かめることである。
 
-## 2. Main experimental question
+## 2. 主たる実験課題
 
-> Does a minimal agent with a slow internal state and a behavior mode variable produce behavior that is persistent, history-dependent, and adaptively switchable in a simple closed-loop environment?
+> 遅い内部状態と行動モード変数をもつ最小エージェントは、単純な閉ループ環境において、持続性があり、履歴依存で、適応的に切り替わる振る舞いを生み出せるか？
 
-## 3. First experimental environment
+## 3. 最初の実験環境
 
-## 3.1 Environment A: Depleting Food Patch
+## 3.1 環境 A: 枯渇する食物パッチ
 
-The first environment should be a small 2D world containing:
+最初の環境は、次を含む小さな 2D 世界とする。
 
-- one main food patch
-- local food sensing
-- depletion when the agent remains in or near the patch
-- sparse risk signal
-- weak or absent explicit target location
+- 1 つの主要な食物パッチ
+- 局所的な食物センシング
+- エージェントがパッチ内または近傍にいると生じる枯渇
+- 疎なリスク信号
+- 弱い、または存在しない明示的目標地点
 
-### Rationale
+### 理由
 
-This environment is chosen because it naturally probes:
+この環境は自然に次を検査できる。
 
-- stay / leave behavior
-- persistence
-- history dependence
-- exploration after local depletion
-- interaction between exploitation and avoidance
+- 滞在 / 離脱行動
+- 持続性
+- 履歴依存性
+- 局所枯渇後の探索
+- 活用と回避の相互作用
 
-It is better aligned with the project than fixed-goal navigation tasks.
+固定目標ナビゲーション課題よりも、このプロジェクトに整合している。
 
-## 3.2 Suggested environment mechanics
+## 3.2 推奨される環境メカニクス
 
-### World
-- 2D continuous plane or small discrete grid
-- bounded domain
+### 世界
 
-### Food
-- one region with initially high food intensity
-- food depletes with local occupation or consumption
-- optional slow regeneration
+- 連続 2D 平面、または小さな離散グリッド
+- 有界領域
 
-### Risk
-- one sparse risk source or stochastic risk field
-- risk should not dominate the task
-- risk exists to test switching and avoidance
+### 食物
 
-### Observation
-- local food level
-- local risk level
-- local gradient estimate if desired
-- optional previous action or heading
+- 初期強度の高い 1 つの領域
+- 局所的な占有や消費で食物が枯渇する
+- 任意でゆっくりした再生
 
-### Action
-- forward move
-- turn left
-- turn right
-- pause / stay
+### リスク
 
-## 4. Experimental conditions
+- 1 つの疎なリスク源、または確率的リスク場
+- リスクは課題全体を支配しない程度にする
+- リスクは切り替えと回避の検査のために導入する
 
-## 4.1 Full model
+### 観測
 
-This is the reference condition.
+- 局所食物レベル
+- 局所リスクレベル
+- 必要なら局所勾配推定
+- 任意で前時刻の行動または方位
 
-Agent includes:
+### 行動
 
-- slow internal state `h`
-- mode dynamics `m`
-- recurrence
-- closed-loop interaction
+- 前進
+- 左旋回
+- 右旋回
+- 停止 / 滞在
 
-This condition tests whether the architecture can produce the target behaviors.
+## 4. 実験条件
 
-## 4.2 Ablation A: no internal state
+## 4.1 完全モデル
 
-Remove or freeze `h`.
+これは基準条件である。
 
-Possible implementation:
-- set `h_t = 0`
-- remove recurrence into `h`
-- bypass `h` in downstream dynamics
+エージェントには次を含める。
 
-Question:
-- does the agent lose history dependence?
+- 遅い内部状態 `h`
+- モードダイナミクス `m`
+- 再帰性
+- 閉ループ相互作用
 
-Expected failure mode:
-- behavior becomes overly tied to immediate observation
+この条件では、アーキテクチャが狙った振る舞いを生み出せるかを確認する。
 
-## 4.3 Ablation B: no mode state
+## 4.2 アブレーション A: 内部状態なし
 
-Remove or bypass `m`.
+`h` を除去または固定する。
 
-Possible implementation:
-- map directly from input and optional `h` to action
-- remove mode persistence
+実装例:
 
-Question:
-- does the agent lose stable action regimes?
+- `h_t = 0` とする
+- `h` への再帰を除去する
+- 下流ダイナミクスで `h` をバイパスする
 
-Expected failure mode:
-- behavior becomes noisy or shallowly reactive
-- stay / leave switching becomes weak or erratic
+問い:
 
-## 4.4 Ablation C: reduced recurrence
+- エージェントは履歴依存性を失うか？
 
-Weaken self-recurrence or leak persistence.
+想定される失敗モード:
 
-Question:
-- does mode persistence or internal continuity disappear?
+- 振る舞いが即時観測に過度に結びつく
 
-Expected failure mode:
-- behavior becomes unstable or memoryless
+## 4.3 アブレーション B: モード状態なし
 
-## 5. Core behavioral tests
+`m` を除去またはバイパスする。
 
-## 5.1 Stay / leave test
+実装例:
 
-Measure whether the agent remains in the food patch early, but leaves when local yield drops or risk rises.
+- 入力と任意の `h` から直接行動へ写像する
+- モード持続を除去する
 
-Questions:
-- does residence time depend on recent interaction history?
-- does the leave probability increase after depletion?
-- is leave timing more structured in the full model than in ablations?
+問い:
 
-## 5.2 Explore / exploit switching test
+- エージェントは安定した行動レジームを失うか？
 
-Measure whether the agent alternates between:
+想定される失敗モード:
 
-- local exploitation
-- broader exploration
+- 振る舞いがノイジーになる、または浅い反応的行動になる
+- 滞在 / 離脱の切り替えが弱くなる、または不規則になる
 
-Questions:
-- does switching emerge without a fixed external goal?
-- do mode dynamics show persistence rather than random oscillation?
-- do ablations reduce this structure?
+## 4.4 アブレーション C: 再帰性の縮小
 
-## 5.3 History dependence test
+自己再帰またはリークの持続性を弱める。
 
-Construct episodes in which immediate observation is similar, but recent history differs.
+問い:
 
-Example:
-- same current food level
-- different recent depletion trajectory
+- モード持続や内部的連続性は消えるか？
 
-Questions:
-- does action choice differ across histories?
-- can the full model distinguish states that immediate input alone cannot?
+想定される失敗モード:
 
-## 5.4 Risk-sensitive switching test
+- 振る舞いが不安定または無記憶的になる
 
-Use sparse risk input to test whether the agent changes mode when exploitation becomes unsafe.
+## 5. 中核的な行動テスト
 
-Questions:
-- does the agent avoid pure greed?
-- does risk influence mode switching, not just immediate turning?
+## 5.1 滞在 / 離脱テスト
 
-## 6. Metrics
+エージェントが初期には食物パッチに留まり、局所収量が下がるかリスクが上がると離れるかを測定する。
 
-## 6.1 Basic behavioral metrics
+問い:
 
-- average residence time in food patch
-- leave probability over time
-- average food collected
-- average risk exposure
-- number of mode switches
-- average mode duration
-- path length
-- exploration radius
-- occupancy heatmap
+- 滞在時間は最近の相互作用履歴に依存するか？
+- 枯渇後に離脱確率は上がるか？
+- 完全モデルの離脱タイミングは、アブレーションより構造化されているか？
 
-These metrics are useful but not sufficient on their own.
+## 5.2 探索 / 活用切り替えテスト
 
-## 6.2 History-sensitive metrics
+エージェントが次の間を行き来するかを測定する。
 
-- divergence in action distribution under matched current input but different recent history
-- dependence of leave probability on recent yield trend
-- dependence of mode occupancy on recent local depletion
+- 局所的活用
+- より広い探索
 
-These metrics are especially important because they test whether internal state matters.
+問い:
 
-## 6.3 Dynamics metrics
+- 固定された外部目標なしに切り替えは生じるか？
+- モードダイナミクスはランダムな振動ではなく持続を示すか？
+- アブレーションでこの構造は弱まるか？
 
-- temporal autocorrelation of mode variable
-- temporal autocorrelation of action selection
-- lagged coupling between internal state and mode transitions
-- sensitivity of switching to slow-state drift
+## 5.3 履歴依存性テスト
 
-These help determine whether the model truly exhibits structured dynamics rather than random fluctuations.
+即時観測は似ているが、直近履歴が異なるエピソードを構成する。
 
-## 7. Visualization plan
+例:
 
-Visualization is essential for this project.
+- 現在の食物レベルは同じ
+- 直近の枯渇軌跡が異なる
 
-At minimum, each experiment should generate:
+問い:
 
-- trajectory plot
-- food field snapshot or depletion map
-- time series of `h`
-- time series of `m`
-- action sequence
-- patch occupancy over time
+- 履歴ごとに行動選択は異なるか？
+- 完全モデルは、即時入力だけでは区別できない状態を区別できるか？
 
-Optional but useful:
+## 5.4 リスク感受的切り替えテスト
 
-- phase plot of `h` vs dominant mode
-- comparison plots across ablations
-- event markers for entering / leaving patch
+疎なリスク入力を使い、活用が危険になったときにエージェントがモードを変えるかを調べる。
 
-## 8. Success criteria for the first PoC
+問い:
 
-The first PoC is successful if the full model shows at least some of the following:
+- エージェントは単純な貪欲さを避けるか？
+- リスクは、その場の旋回だけでなくモード切り替えにも影響するか？
 
-- persistent behavioral modes
-- nontrivial stay / leave behavior
-- nontrivial explore / exploit switching
-- dependence on recent interaction history
-- clear qualitative degradation under ablation
+## 6. 指標
 
-A successful first PoC does **not** require:
+## 6.1 基本的な行動指標
 
-- perfect optimization
-- biological realism
-- high reward score
-- match to any one species
+- 平均パッチ滞在時間
+- 時間に対する離脱確率
+- 平均獲得食物量
+- 平均リスク曝露
+- モード切り替え回数
+- 平均モード持続時間
+- 経路長
+- 探索半径
+- 滞在ヒートマップ
 
-## 9. Failure cases and interpretation
+これらの指標は有用だが、それだけでは十分ではない。
 
-## 9.1 If full model behaves like stimulus-response
+## 6.2 履歴感受的な指標
 
-Possible interpretation:
-- internal state is too weak
-- recurrence is too weak
-- environment does not require history
-- mode competition is poorly tuned
+- 現在入力が一致しているが直近履歴が異なる条件での行動分布の乖離
+- 直近の収量トレンドに対する離脱確率の依存
+- 直近の局所枯渇に対するモード占有率の依存
 
-## 9.2 If full model is unstable or chaotic
+これらは、内部状態が重要かどうかを検査するため特に重要である。
 
-Possible interpretation:
-- recurrent gain too strong
-- time-scale separation poorly chosen
-- mode state too unconstrained
+## 6.3 ダイナミクス指標
 
-## 9.3 If ablations perform similarly to full model
+- モード変数の時間自己相関
+- 行動選択の時間自己相関
+- 内部状態とモード遷移の遅延結合
+- 遅い状態ドリフトに対する切り替え感度
 
-Possible interpretation:
-- environment is too easy
-- architecture is unnecessarily complex
-- internal state is not actually contributing
-- mode variable is redundant in current setup
+これらにより、モデルがランダムゆらぎではなく構造化されたダイナミクスを本当に示しているかを判断できる。
 
-This would be an important result, not just a failure.
+## 7. 可視化計画
 
-## 10. Recommended experimental order
+可視化はこのプロジェクトで不可欠である。
 
-### Phase 1: Environment sanity check
-- visualize food and risk fields
-- verify depletion logic
-- verify action and movement
+少なくとも各実験では次を生成する。
 
-### Phase 2: Full model qualitative run
-- run hand-tuned full model
-- inspect trajectories and state traces
+- 軌跡プロット
+- 食物場スナップショットまたは枯渇マップ
+- `h` の時系列
+- `m` の時系列
+- 行動系列
+- 時間に対するパッチ占有
 
-### Phase 3: Ablation comparison
-- no `h`
-- no `m`
-- reduced recurrence
+任意だが有用なもの:
 
-### Phase 4: Parameter sweep
-- vary time constants
-- vary recurrence strength
-- vary mode competition strength
+- `h` と支配的モードの位相図
+- アブレーション間の比較プロット
+- パッチ進入 / 離脱のイベントマーカー
 
-### Phase 5: Stress tests
-- add observation noise
-- vary patch quality
-- vary depletion rate
-- vary risk strength
+## 8. 最初の PoC の成功基準
 
-## 11. Comparison logic
+完全モデルが少なくとも次のいくつかを示せば、最初の PoC は成功である。
 
-The most important comparison is not raw score.
-It is behavioral structure.
+- 持続的な行動モード
+- 自明でない滞在 / 離脱行動
+- 自明でない探索 / 活用の切り替え
+- 直近の相互作用履歴への依存
+- アブレーションでの明確な定性的劣化
 
-Preferred order of interpretation:
+成功した最初の PoC に必要ないもの:
 
-1. Does full model show the intended qualitative patterns?
-2. Do ablations weaken those patterns?
-3. Can differences be explained by internal state and mode dynamics?
-4. Which architectural element contributes most?
+- 完全最適化
+- 生物学的リアリズム
+- 高い報酬スコア
+- 特定の単一種への一致
 
-## 12. Deliverables
+## 9. 失敗例と解釈
 
-Each experiment batch should produce:
+## 9.1 完全モデルが刺激-反応のように振る舞う場合
 
-- saved plots
-- summary metrics
-- configuration used
-- short textual interpretation
+考えられる解釈:
 
-Suggested output structure:
+- 内部状態が弱すぎる
+- 再帰性が弱すぎる
+- 環境が履歴を必要としていない
+- モード競合の調整が不十分
+
+## 9.2 完全モデルが不安定またはカオス的な場合
+
+考えられる解釈:
+
+- 再帰ゲインが強すぎる
+- 時間スケール分離の選び方が悪い
+- モード状態への制約が弱すぎる
+
+## 9.3 アブレーションが完全モデルと同程度に動く場合
+
+考えられる解釈:
+
+- 環境が簡単すぎる
+- アーキテクチャが不要に複雑
+- 内部状態が実際には寄与していない
+- 現在の設定ではモード変数が冗長
+
+これは単なる失敗ではなく、重要な結果である。
+
+## 10. 推奨する実験順序
+
+### フェーズ 1: 環境の妥当性確認
+
+- 食物場とリスク場を可視化する
+- 枯渇ロジックを検証する
+- 行動と移動を検証する
+
+### フェーズ 2: 完全モデルの定性的実行
+
+- 手調整した完全モデルを実行する
+- 軌跡と状態トレースを観察する
+
+### フェーズ 3: アブレーション比較
+
+- `h` なし
+- `m` なし
+- 再帰性の縮小
+
+### フェーズ 4: パラメータスイープ
+
+- 時定数を変える
+- 再帰強度を変える
+- モード競合強度を変える
+
+### フェーズ 5: ストレステスト
+
+- 観測ノイズを加える
+- パッチ品質を変える
+- 枯渇率を変える
+- リスク強度を変える
+
+## 11. 比較ロジック
+
+もっとも重要な比較は、生のスコアではない。
+行動構造である。
+
+推奨する解釈順序:
+
+1. 完全モデルは意図した定性的パターンを示すか？
+2. アブレーションはそのパターンを弱めるか？
+3. 差異は内部状態とモードダイナミクスで説明できるか？
+4. どのアーキテクチャ要素が最も寄与しているか？
+
+## 12. 成果物
+
+各実験バッチは次を出力する。
+
+- 保存済みプロット
+- 要約指標
+- 使用した設定
+- 短い文章による解釈
+
+推奨する出力構造:
 
 - `outputs/<experiment_name>/plots/`
 - `outputs/<experiment_name>/metrics.json`
 - `outputs/<experiment_name>/config.yaml`
 - `outputs/<experiment_name>/notes.txt`
 
-## 13. Future extensions after first PoC
+## 13. 最初の PoC 後の将来的拡張
 
-Only after the first PoC is successful should the project consider:
+最初の PoC が成功してから、次を検討する。
 
-- explicit prediction error
-- learned parameters
-- multiple food patches
-- hierarchical modes
-- multiple timescale internal states
-- recurrent modular composition
-- comparison to biological trajectory data
+- 明示的な予測誤差
+- 学習可能なパラメータ
+- 複数の食物パッチ
+- 階層的モード
+- 複数時間スケールの内部状態
+- 再帰的モジュール合成
+- 生物の軌跡データとの比較
 
-## 14. Current stance
+## 14. 現在の立場
 
-The first experiments are intended to answer a narrow question:
+最初の実験群が答えようとしているのは、狭く絞った次の問いである。
 
-> Is a tiny recurrent closed-loop agent with slow internal state and mode dynamics already enough to generate a meaningful proto-form of enactive agency?
+> 遅い内部状態とモードダイナミクスをもつ小さなリカレント閉ループエージェントは、それだけで意味のあるエナクティブなエージェンシーの原初形を生成するのに十分か？
 
-This is the claim the first experiment suite should test.
+これが、最初の実験セットで検証すべき主張である。
