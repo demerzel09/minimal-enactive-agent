@@ -4,7 +4,7 @@ model:
   obs_dim: 3
   h_dim: 2
   m_dim: 3
-  alpha_h: 0.18
+  alpha_h: 0.04
   alpha_m: 0.40
   init_mode: handtuned
   use_h: false

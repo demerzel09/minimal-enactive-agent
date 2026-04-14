@@ -151,10 +151,14 @@ class MinimalEnactiveAgent:
 
         This is the agent's active sensing — observation is an act, not a gift.
         Sensor parameters (sigma) belong to the agent, not the environment.
+        Food signal is the sum across all patches (like mixed odors from multiple sources).
         """
-        d_food = np.linalg.norm(env_state.pos - env_state.patch_center)
-        food_spatial = np.exp(-(d_food ** 2) / (2 * self.food_sensor_sigma ** 2))
-        local_food = float(np.clip(env_state.patch_level * food_spatial, 0.0, 1.0))
+        local_food = 0.0
+        for patch in env_state.patches:
+            d = np.linalg.norm(env_state.pos - patch.center)
+            spatial = np.exp(-(d ** 2) / (2 * self.food_sensor_sigma ** 2))
+            local_food += patch.level * spatial
+        local_food = float(np.clip(local_food, 0.0, 1.0))
 
         d_risk = np.linalg.norm(env_state.pos - env_state.risk_center)
         risk_base = env_state.risk_strength * np.exp(-(d_risk ** 2) / (2 * self.risk_sensor_sigma ** 2))

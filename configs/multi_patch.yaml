@@ -15,16 +15,20 @@ environment:
   step_size: 0.7
   turn_angle: 0.45
 
-  start_pos: [7.0, 10.0]
+  start_pos: [4.0, 10.0]
   start_heading: 0.1
 
-  patch_center: [10.0, 10.0]
-  patch_radius: 2.8
-  patch_max_food: 1.0
-  patch_depletion_rate: 0.035
-  patch_regen_rate: 0.004
+  patches:
+    - center: [7.0, 10.0]
+      radius: 2.5
+    - center: [16.0, 12.0]
+      radius: 2.5
 
-  risk_center: [14.5, 6.0]
+  patch_max_food: 1.0
+  patch_depletion_rate: 0.05
+  patch_regen_rate: 0.003
+
+  risk_center: [11.0, 6.0]
   risk_radius: 1.2
   risk_strength: 0.9
   risk_noise_prob: 0.03
@@ -34,5 +38,5 @@ environment:
   risk_sensor_sigma: 1.4
 
 simulation:
-  steps: 500
-  output_dir: outputs/full
+  steps: 800
+  output_dir: outputs/exp5_multi_patch_full

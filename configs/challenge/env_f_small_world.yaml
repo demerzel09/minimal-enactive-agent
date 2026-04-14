@@ -1,3 +1,6 @@
+# Env F: Small confined world
+# Tests: can the agent adapt to tight spaces where wall-bouncing dominates?
+# Probes: robustness to environmental geometry change
 seed: 7
 
 model:
@@ -11,28 +14,24 @@ model:
   use_m: true
 
 environment:
-  world_size: 20.0
+  world_size: 10.0
   step_size: 0.7
   turn_angle: 0.45
-
-  start_pos: [7.0, 10.0]
+  start_pos: [3.0, 5.0]
   start_heading: 0.1
-
-  patch_center: [10.0, 10.0]
-  patch_radius: 2.8
+  patch_center: [5.0, 5.0]
+  patch_radius: 2.0
   patch_max_food: 1.0
   patch_depletion_rate: 0.035
   patch_regen_rate: 0.004
-
-  risk_center: [14.5, 6.0]
-  risk_radius: 1.2
+  risk_center: [8.0, 3.0]
+  risk_radius: 1.0
   risk_strength: 0.9
   risk_noise_prob: 0.03
   risk_noise_strength: 0.5
-
-  food_sensor_sigma: 4.0
+  food_sensor_sigma: 3.0
   risk_sensor_sigma: 1.4
 
 simulation:
   steps: 500
-  output_dir: outputs/full
+  output_dir: outputs/challenge/env_f

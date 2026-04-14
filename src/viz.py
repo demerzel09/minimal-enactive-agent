@@ -21,9 +21,16 @@ def plot_trajectory(log: Dict, layout: Dict, output_path: str) -> None:
     ax.scatter([x[0]], [y[0]], c="green", s=60, label="start")
     ax.scatter([x[-1]], [y[-1]], c="red", s=60, label="end")
 
-    patch = plt.Circle(layout["patch_center"], layout["patch_radius"], color="orange", alpha=0.25, label="food patch")
+    # Draw food patches (supports single and multi-patch layouts)
+    centers = layout.get("patch_centers", [layout["patch_center"].tolist()] if "patch_center" in layout else [])
+    radii = layout.get("patch_radii", [layout.get("patch_radius", 2.8)])
+    colors = ["orange", "green", "cyan", "yellow"]
+    for i, (c, r) in enumerate(zip(centers, radii)):
+        label = f"patch {i}" if len(centers) > 1 else "food patch"
+        circle = plt.Circle(c, r, color=colors[i % len(colors)], alpha=0.25, label=label)
+        ax.add_patch(circle)
+
     risk = plt.Circle(layout["risk_center"], layout["risk_radius"], color="purple", alpha=0.2, label="risk core")
-    ax.add_patch(patch)
     ax.add_patch(risk)
 
     ax.set_xlim(0, layout["world_size"])

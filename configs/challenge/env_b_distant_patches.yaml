@@ -1,0 +1,43 @@
+# Env B: Distant patches
+# Tests: can the agent find and exploit a patch far from sensor range?
+# Probes: spatial navigation limit of the architecture (no spatial memory)
+seed: 7
+
+model:
+  obs_dim: 3
+  h_dim: 2
+  m_dim: 3
+  alpha_h: 0.04
+  alpha_m: 0.40
+  init_mode: handtuned
+  use_h: true
+  use_m: true
+
+environment:
+  world_size: 30.0
+  step_size: 0.7
+  turn_angle: 0.45
+  start_pos: [5.0, 15.0]
+  start_heading: 0.3
+
+  patches:
+    - center: [8.0, 15.0]
+      radius: 2.5
+    - center: [25.0, 15.0]
+      radius: 2.5
+
+  patch_max_food: 1.0
+  patch_depletion_rate: 0.04
+  patch_regen_rate: 0.003
+
+  risk_center: [15.0, 10.0]
+  risk_radius: 1.5
+  risk_strength: 0.7
+  risk_noise_prob: 0.02
+  risk_noise_strength: 0.3
+  food_sensor_sigma: 4.0
+  risk_sensor_sigma: 1.4
+
+simulation:
+  steps: 800
+  output_dir: outputs/challenge/env_b
