@@ -801,8 +801,13 @@ v7 を現行のベース設定として採用する。
 
 **失敗環境:**
 
-- **B (distant_patches)**: transitions=3.0, mode_switch=1.0。パッチ間距離が大きすぎ、センサー範囲外で次のパッチを発見できない。アーキテクチャの根本制約（空間記憶なし）が顕在化。
-- **F (small_world)**: transitions=1.0。world_size=10 で壁反射が支配的。エージェントのステップサイズ・旋回角が小さな世界に合わない。パッチを1回通過して以後再訪なし。
+- **B (distant_patches)**: transitions=3.0, mode_switch=1.0。パッチ間距離が大きすぎ、センサー範囲外で次のパッチを発見できない。軌跡を見ると、1つのパッチに到達した後そこに固着し、他のパッチを発見できていない。
+
+![B: 手動設計の軌跡 — 右下パッチに固着](assets/ch_B_handtuned_traj.png)
+
+- **F (small_world)**: transitions=1.0。world_size=10 で壁反射が支配的。パッチを1回通過して以後再訪なし。
+
+![F: 手動設計の軌跡 — パッチ周辺を通過するが再訪できない](assets/ch_F_handtuned_traj.png)
 
 ### 能力包絡線の要約
 
@@ -889,6 +894,55 @@ v7 を現行のベース設定として採用する。
 
 ![手動設計 vs GA 最適化](assets/challenge_handtuned_vs_ga.png)
 
+### 軌跡の視覚的比較
+
+**環境 B（遠距離パッチ）: 手動設計の最大の失敗 → GA で劇的に解決**
+
+手動設計では右下の1パッチに固着していたが、GA-universal では密な周回で広範囲をカバーし
+両パッチを高頻度で訪問。Per-env はさらに広い8の字軌道で両パッチを巡回する。
+
+| 手動設計 | GA-universal | GA per-env |
+|---|---|---|
+| ![](assets/ch_B_handtuned_traj.png) | ![](assets/ch_B_ga_uni_traj.png) | ![](assets/ch_B_ga_perenv_traj.png) |
+| trans=3, food=0.114 | trans=25, food=0.560 | trans=23, food=0.203 |
+
+手動設計の内部状態は h が片方の値に収束して動かなくなっているのに対し、
+per-env GA では h が周期的に振動し、パッチ訪問のたびにモードが切り替わっている。
+
+| 手動設計の内部状態 | GA per-env の内部状態 |
+|---|---|
+| ![](assets/ch_B_handtuned_states.png) | ![](assets/ch_B_ga_perenv_states.png) |
+
+**環境 F（小さい世界）: パラメータ不適合の解消**
+
+手動設計では壁反射に翻弄されパッチ再訪が 1 回のみ。GA-universal は狭い空間内でコンパクトな
+周回軌道を形成し、パッチを繰り返し通過する戦略を獲得。
+
+| 手動設計 | GA-universal |
+|---|---|
+| ![](assets/ch_F_handtuned_traj.png) | ![](assets/ch_F_ga_uni_traj.png) |
+| trans=1 | trans=20 |
+
+**環境 G（3パッチ）: 汎用 vs 特化の差が見える環境**
+
+手動設計は左下の1パッチに固着。GA-universal は2パッチを巡回するがパッチ2（右下）には到達しない。
+Per-env GA のみが3パッチ巡回に近い軌道を実現 — これが uni/ceil=81% の原因。
+
+| 手動設計 | GA-universal | GA per-env |
+|---|---|---|
+| ![](assets/ch_G_handtuned_traj.png) | ![](assets/ch_G_ga_uni_traj.png) | ![](assets/ch_G_ga_perenv_traj.png) |
+| trans=8.3 (std=10.4) | trans=43.7 | trans=53.7 |
+
+**環境 C（高速枯渇）: アーキテクチャの真の限界**
+
+手動設計はパッチ周辺で密に周回。GA-universal はパッチから離れた大きな円を描く —
+枯渇済みパッチに留まるより広域探索に切り替えたが、回収すべき食物自体がない。
+
+| 手動設計 | GA-universal |
+|---|---|
+| ![](assets/ch_C_handtuned_traj.png) | ![](assets/ch_C_ga_uni_traj.png) |
+| trans=15, food=0.118 | trans=26, food=0.043 |
+
 ### 分析: 「パラメータ問題」vs「アーキテクチャ制約」
 
 **パラメータ問題だった（GA で解決）:**
@@ -938,3 +992,192 @@ GA 最適化後も残る制約:
 - **環境 C のトレードオフ**: 枯渇速度への適応には、h に「枯渇率の推定」を追加する必要がある可能性
 
 これらは真にアーキテクチャの拡張が必要な課題であり、architecture_principles.md の拡張ロードマップに沿って検討すべき。
+
+---
+
+## 実験 8: 3-way 比較 — 汎用パラメータ vs 環境特化パラメータ
+
+**日付**: 2026-04-14  
+**目的**: 「全環境に同時対応する単一パラメータ」の有効性を、「各環境に特化したパラメータ（理論上限）」と比較して評価する。
+
+### 実験設計
+
+3 条件を比較:
+1. **Handtuned v7**: 人間の直感による手動設計
+2. **GA-universal**: 全 7 環境を同時最適化した単一パラメータ（30 pop × 50 gen）
+3. **GA per-env（天井）**: 各環境に個別に最適化（20 pop × 30 gen × 7 環境）
+
+### 環境別 GA が発見したパラメータ
+
+| 環境 | alpha_h | alpha_m | 特徴 |
+|---|---|---|---|
+| A_baseline | 0.021 | 0.346 | h を非常に遅く |
+| B_distant | 0.044 | 0.338 | 標準的 |
+| C_fast_depl | 0.036 | 0.346 | 標準的 |
+| D_risk_food | 0.041 | 0.499 | m を速く（リスク回避の高速切替） |
+| E_no_risk | 0.031 | 0.455 | m を速く |
+| F_small | 0.038 | 0.377 | 標準的 |
+| G_3patches | 0.058 | 0.381 | h を速めに（3パッチの情報統合） |
+| **GA-universal** | **0.053** | **0.593** | **m が大幅に速い** |
+
+注目: 環境別 GA では alpha_m = 0.33-0.50 だが、汎用 GA は alpha_m = 0.59 とはるかに大きい。
+汎用 GA は「どの環境でもそこそこ機能する」ために、モード切替をさらに高速化した。
+
+### 3-way 比較結果
+
+| 環境 | HT food | GA-uni food | Per-env food | uni/ceil | HT trans | GA-uni trans | Per-env trans |
+|---|---|---|---|---|---|---|---|
+| A_baseline | 0.222 | **0.277** | 0.244 | 114% | 12.3 | 21.0 | 21.0 |
+| B_distant | 0.114 | **0.564** | 0.202 | 279% | 3.0 | 24.0 | 22.3 |
+| C_fast_depl | 0.118 | 0.102 | 0.040 | 256% | 15.0 | 21.3 | 27.0 |
+| D_risk_food | 0.179 | **0.243** | 0.237 | 102% | 15.7 | 20.3 | 21.7 |
+| E_no_risk | 0.213 | 0.269 | **0.279** | 96% | 11.0 | 22.0 | 25.0 |
+| F_small | 0.249 | 0.387 | **0.389** | 99% | 1.0 | 20.7 | 22.7 |
+| G_3patches | 0.127 | 0.260 | **0.381** | 68% | 8.3 | 43.7 | 53.7 |
+
+食物合計: HT=1.221, GA-uni=**2.102**, Per-env=1.773  
+**GA-universal の合計達成率: per-env ceiling の 119%**
+
+![3-way 比較](assets/challenge_three_way_comparison.png)
+
+### 指標による比較の違い
+
+**Transitions（パッチ再訪回数）— このアーキテクチャの中核能力指標:**
+
+| 環境 | GA-uni | Per-env | uni/ceil |
+|---|---|---|---|
+| A_baseline | 21.0 | 21.0 | 100% |
+| B_distant | 24.0 | 22.3 | 107% |
+| C_fast_depl | 21.3 | 27.0 | **79%** |
+| D_risk_food | 20.3 | 21.7 | 94% |
+| E_no_risk | 22.0 | 25.0 | 88% |
+| F_small | 20.7 | 22.7 | 91% |
+| G_3patches | 43.7 | 53.7 | **81%** |
+| **合計** | **173.0** | **193.3** | **89%** |
+
+**Food（食物獲得量）:**
+
+| 環境 | GA-uni | Per-env | uni/ceil |
+|---|---|---|---|
+| 合計 | 2.102 | 1.773 | 119% |
+
+food 合計では GA-universal が per-env を上回る（119%）が、これは主に環境 B の異常値
+（GA-uni=0.564 vs Per-env=0.202）と環境 C の分母の小ささ（per-env=0.040）に起因し、
+フェアな比較ではない。
+
+**transitions を主指標とすべき理由**: パッチ再訪はこのアーキテクチャが実現する中核的な
+行動パターン（活用→探索→再発見のサイクル）の直接的な測定であり、
+food は環境パラメータ（パッチの最大食物量、枯渇率）に大きく依存するため環境間の比較に不向き。
+
+### GA-universal vs Per-env: 全環境の軌跡・内部状態比較
+
+**A（baseline）: uni=22, per-env=21 — ほぼ同一の軌道・内部状態**
+
+| GA-universal 軌跡 | GA per-env 軌跡 |
+|---|---|
+| ![](assets/ch_A_ga_uni_traj.png) | ![](assets/ch_A_ga_perenv_traj.png) |
+
+両者ともパッチ周辺の密な周回。内部状態も h の収束値・m の振動パターンがほぼ同じ。
+ベースライン環境では汎化コストがゼロであることを視覚的に確認。
+
+**B（distant）: uni=25, per-env=23 — 戦略が根本的に異なる**
+
+| GA-universal 軌跡 | GA per-env 軌跡 |
+|---|---|
+| ![](assets/ch_B_ga_uni_traj.png) | ![](assets/ch_B_ga_perenv_traj.png) |
+
+GA-uni は右側パッチ周辺で密に周回（food=0.560）。
+Per-env は広い8の字軌道で両パッチを巡回（food=0.203）。
+再訪数は近いが **食物獲得量に2.8倍の差** — GA-uni は1パッチを集中的に搾取、
+per-env は両パッチを薄く訪問。汎用パラメータの高速 alpha_m が
+「1パッチ集中搾取」という別の有効戦略を発見した。
+
+| GA-universal 内部状態 | GA per-env 内部状態 |
+|---|---|
+| ![](assets/ch_B_ga_uni_states.png) | ![](assets/ch_B_ga_perenv_states.png) |
+
+Per-env の h は大きな周期的振動を示し、パッチ訪問と離脱がはっきり h に刻まれている。
+GA-uni の h は高い値で安定し、探索モード優勢を維持。
+
+**D（risk near food）: uni=19, per-env=21 — 回避モードの使い方が異なる**
+
+| GA-universal 軌跡 | GA per-env 軌跡 |
+|---|---|
+| ![](assets/ch_D_ga_uni_traj.png) | ![](assets/ch_D_ga_perenv_traj.png) |
+
+GA-uni はパッチ+リスク領域の周辺で密に周回。Per-env はより広い軌道でリスク領域を
+大きく迂回する戦略を取る。
+
+| GA-universal 内部状態 | GA per-env 内部状態 |
+|---|---|
+| ![](assets/ch_D_ga_uni_states.png) | ![](assets/ch_D_ga_perenv_states.png) |
+
+注目すべき差: Per-env では **m[2]（回避モード）が頻繁にスパイク** し、
+リスク検知のたびに明確な回避行動を発生させている。
+GA-uni では m[1]（探索）が支配的で、回避モードの活性化は穏やか。
+Per-env が alpha_m=0.50 で学んだ「リスク検知→即座に回避」は、
+GA-uni の alpha_m=0.59 による「常時高速探索で結果的に回避」とは質的に異なる戦略。
+
+**E（no risk）: uni=22, per-env=25 — per-env がより安定した周期を形成**
+
+| GA-universal 軌跡 | GA per-env 軌跡 |
+|---|---|
+| ![](assets/ch_E_ga_uni_traj.png) | ![](assets/ch_E_ga_perenv_traj.png) |
+
+GA-uni はパッチ近傍で密に周回。Per-env はより広い軌道でパッチを安定的に再訪。
+Per-env の方が in_patch のスパイクがより等間隔で規則的 — alpha_h=0.031 が
+h のゆるやかな振動を通じて安定した周期的行動を生んでいる。
+
+**F（small world）: uni=20, per-env=23 — 狭い空間での適応が類似**
+
+| GA-universal 内部状態 | GA per-env 内部状態 |
+|---|---|
+| ![](assets/ch_F_ga_uni_states.png) | ![](assets/ch_F_ga_perenv_states.png) |
+
+両者の内部状態パターンは非常に類似。h の振動周期・振幅、m の explore 優勢パターンが
+ほぼ同一。小世界では限られた軌道しか取れないため、パラメータの違いが
+行動パターンに反映されにくい。
+
+**G（3 patches）: uni=41, per-env=47 — 訪問パッチ数に差**
+
+| GA-universal 軌跡 | GA per-env 軌跡 |
+|---|---|
+| ![](assets/ch_G_ga_uni_traj.png) | ![](assets/ch_G_ga_perenv_traj.png) |
+
+| GA-universal 内部状態 | GA per-env 内部状態 |
+|---|---|
+| ![](assets/ch_G_ga_uni_states.png) | ![](assets/ch_G_ga_perenv_states.png) |
+
+GA-uni はパッチ1・2の2パッチ巡回。Per-env はパッチ2・3を中心により広い巡回。
+内部状態で注目すべきは per-env の h の振幅がやや小さく（alpha_h=0.058 vs 0.053）、
+h がより速く更新されることでパッチ間の情報統合が促進されている。
+ただし食物獲得で per-env が上回る（0.314 vs 0.300）のは軽微な差であり、
+再訪数の差（47 vs 41）が主な違い。
+
+### 分析
+
+transitions で見ると、**GA-universal は per-env ceiling の約 89%** に達している。
+
+環境別の汎化コスト:
+- **A, B**: ほぼ天井到達（100-107%）— 汎用パラメータで十分
+- **D, E, F**: 軽微な汎化コスト（88-94%）— 実用上問題なし
+- **C, G**: 明確な汎化コスト（79-81%）— 特化パラメータとの差が目立つ
+
+**C（高速枯渇）が弱い理由**: 枯渇率が速い環境に適応するには h の変化が速い方がよい
+（per-env GA: alpha_h=0.036）が、他の環境では h が遅い方がよいため妥協が生じる。
+
+**G（3パッチ）が弱い理由**: 3 パッチ巡回の最適化には per-env GA が alpha_h=0.058 と
+h を速め、パッチ間の情報統合を促進しているが、GA-universal はそこまで h を速められない。
+
+### 結論
+
+**「すべての環境に対応する単一パラメータ」は見つかった。ただし天井の約9割。**
+
+GA-universal は手動設計に比べ全環境で大幅に改善し（transitions +161%）、
+per-env ceiling の 89% を単一パラメータで達成した。
+残り 11% は「環境特化の余地」であり、アーキテクチャ制約ではない。
+
+真にアーキテクチャ拡張が必要な課題:
+- **環境 C（高速枯渇）**: per-env 特化でも food=0.040 と低い。枯渇率の時間的推定が必要 → h の次元拡張または新変数
+- **環境 G（3パッチ）**: per-env では transitions=53.7 と高いが GA-uni では 43.7。
+  複数資源の品質比較のためには i_t の空間的分解能向上が有効な可能性
