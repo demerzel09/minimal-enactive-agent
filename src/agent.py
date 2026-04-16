@@ -2,23 +2,20 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Dict
 
 import numpy as np
 
-from src.env import EnvState
+# Canonical data structures and ABC live in interfaces.py.
+# Re-export AgentStep so existing ``from src.agent import AgentStep`` works.
+from src.interfaces import (  # noqa: F401  — re-exports
+    BaseAgent,
+    AgentStep,
+    EnvState,
+)
 
 
-@dataclass
-class AgentStep:
-    observation: np.ndarray
-    action: np.ndarray
-    h: np.ndarray
-    m: np.ndarray
-
-
-class MinimalEnactiveAgent:
+class MinimalEnactiveAgent(BaseAgent):
     """Small inspectable recurrent rate-based policy.
 
     Full model:
@@ -48,9 +45,18 @@ class MinimalEnactiveAgent:
         self.recurrence_scale = float(model_cfg.get("recurrence_scale", 1.0))
 
         # Sensor parameters — part of the agent's body, not the environment.
+        # Preferred location: config["model"]["sensors"]
+        # Fallback: config["environment"] (legacy format)
+        sensors_cfg = model_cfg.get("sensors", {})
         env_cfg = config.get("environment", {})
-        self.food_sensor_sigma = float(env_cfg.get("food_sensor_sigma", 2.0))
-        self.risk_sensor_sigma = float(env_cfg.get("risk_sensor_sigma", 1.4))
+
+        def _sensor(name: str, default: float) -> float:
+            return float(sensors_cfg.get(name, env_cfg.get(name, default)))
+
+        self.food_sensor_sigma = _sensor("food_sensor_sigma", 2.0)
+        self.odor_sensor_sigma = _sensor("odor_sensor_sigma", 0.0)
+        self.odor_noise_strength = _sensor("odor_noise_strength", 0.0)
+        self.risk_sensor_sigma = _sensor("risk_sensor_sigma", 1.4)
         self.prev_local_food = 0.0
 
         seed = int(config.get("seed", 0)) + 17
@@ -151,13 +157,31 @@ class MinimalEnactiveAgent:
 
         This is the agent's active sensing — observation is an act, not a gift.
         Sensor parameters (sigma) belong to the agent, not the environment.
-        Food signal is the sum across all patches (like mixed odors from multiple sources).
+
+        Two sensing modes:
+          - Direct food sensing (odor_sensor_sigma == 0): detects food level via
+            food_sensor_sigma. Sharp falloff, no residual after depletion.
+          - Odor-based sensing (odor_sensor_sigma > 0): detects odor field via
+            odor_sensor_sigma (wider range). Depleted patches still smell.
+            Temporal noise simulates turbulent plume.
         """
+        use_odor = self.odor_sensor_sigma > 0
         local_food = 0.0
         for patch in env_state.patches:
             d = np.linalg.norm(env_state.pos - patch.center)
-            spatial = np.exp(-(d ** 2) / (2 * self.food_sensor_sigma ** 2))
-            local_food += patch.level * spatial
+            if use_odor:
+                sigma = self.odor_sensor_sigma
+                source = patch.odor_level
+            else:
+                sigma = self.food_sensor_sigma
+                source = patch.level
+            spatial = np.exp(-(d ** 2) / (2 * sigma ** 2))
+            local_food += source * spatial
+
+        # Add temporal noise to odor sensing (turbulent plume)
+        if use_odor and self.odor_noise_strength > 0:
+            local_food += self.rng.normal(0.0, self.odor_noise_strength)
+
         local_food = float(np.clip(local_food, 0.0, 1.0))
 
         d_risk = np.linalg.norm(env_state.pos - env_state.risk_center)

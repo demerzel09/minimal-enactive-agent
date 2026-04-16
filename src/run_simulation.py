@@ -5,12 +5,12 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 
 import yaml
 
-from src.agent import MinimalEnactiveAgent
-from src.env import ForagingEnv
+from src.interfaces import BaseAgent, BaseEnvironment
+from src.registry import create_agent, create_env
 from src.eval import compute_metrics
 from src.viz import plot_states, plot_trajectory
 
@@ -20,9 +20,27 @@ def load_config(path: str) -> Dict:
         return yaml.safe_load(f)
 
 
-def run_episode(config: Dict) -> Dict:
-    env = ForagingEnv(config)
-    agent = MinimalEnactiveAgent(config)
+def run_episode(
+    config: Dict,
+    env: Optional[BaseEnvironment] = None,
+    agent: Optional[BaseAgent] = None,
+    save_outputs: bool = True,
+) -> Dict:
+    """Run a single episode and return metrics.
+
+    Args:
+        config: Full configuration dict.
+        env: Pre-built environment (if None, created from config via registry).
+        agent: Pre-built agent (if None, created from config via registry).
+        save_outputs: If True, save metrics, log, and plots to output_dir.
+
+    Returns:
+        Dict with "metrics", "log", and "output_dir" keys.
+    """
+    if env is None:
+        env = create_env(config)
+    if agent is None:
+        agent = create_agent(config)
 
     env_state = env.reset()
     agent.reset()
@@ -62,18 +80,20 @@ def run_episode(config: Dict) -> Dict:
     metrics = compute_metrics(log)
 
     output_dir = Path(config["simulation"].get("output_dir", "outputs/base"))
-    output_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(output_dir / "metrics.json", "w", encoding="utf-8") as f:
-        json.dump(metrics, f, indent=2)
+    if save_outputs:
+        output_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(output_dir / "rollout_log.json", "w", encoding="utf-8") as f:
-        json.dump(log, f)
+        with open(output_dir / "metrics.json", "w", encoding="utf-8") as f:
+            json.dump(metrics, f, indent=2)
 
-    plot_trajectory(log, env.get_layout(), str(output_dir / "trajectory.png"))
-    plot_states(log, str(output_dir / "states.png"))
+        with open(output_dir / "rollout_log.json", "w", encoding="utf-8") as f:
+            json.dump(log, f)
 
-    return {"metrics": metrics, "output_dir": str(output_dir)}
+        plot_trajectory(log, env.get_layout(), str(output_dir / "trajectory.png"))
+        plot_states(log, str(output_dir / "states.png"))
+
+    return {"metrics": metrics, "log": log, "output_dir": str(output_dir)}
 
 
 def main() -> None:

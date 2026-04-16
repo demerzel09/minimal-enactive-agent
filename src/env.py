@@ -2,41 +2,22 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 
 import numpy as np
 
-
-@dataclass
-class PatchState:
-    """State of a single food patch."""
-    center: np.ndarray
-    radius: float
-    level: float
-    max_food: float
-
-
-@dataclass
-class EnvState:
-    """Raw environment state exposed to the agent's sensing apparatus."""
-    pos: np.ndarray
-    heading: float
-    patches: List[PatchState]
-    risk_center: np.ndarray
-    risk_strength: float
-    risk_spike: float
-    in_any_patch: bool
-    t: int
+# Canonical data structures and ABC live in interfaces.py.
+# Re-export them here so that existing ``from src.env import EnvState``
+# continues to work.
+from src.interfaces import (  # noqa: F401  — re-exports
+    BaseEnvironment,
+    PatchState,
+    EnvState,
+    StepInfo,
+)
 
 
-@dataclass
-class StepInfo:
-    """Logging information returned after each environment step."""
-    info: Dict[str, float]
-
-
-class ForagingEnv:
+class ForagingEnv(BaseEnvironment):
     """2D environment with depleting food patches and sparse risk.
 
     Supports one or multiple food patches. The environment manages physics
@@ -142,7 +123,6 @@ class ForagingEnv:
             "x": self.pos[0],
             "y": self.pos[1],
         })
-        # Add per-patch levels for multi-patch logging
         for i in range(self.n_patches):
             info.info[f"patch_{i}_level"] = self.patch_levels[i]
         return state, info
@@ -182,11 +162,9 @@ class ForagingEnv:
             "risk_radius": self.risk_radius,
             "n_patches": self.n_patches,
         }
-        # Backward compat: single patch uses old keys
         if self.n_patches == 1:
             layout["patch_center"] = self.patch_centers[0]
             layout["patch_radius"] = self.patch_radii[0]
-        # Always include list form
         layout["patch_centers"] = [c.tolist() for c in self.patch_centers]
         layout["patch_radii"] = self.patch_radii
         return layout
