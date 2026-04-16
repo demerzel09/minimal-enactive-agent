@@ -57,7 +57,9 @@ class MinimalEnactiveAgent(BaseAgent):
         self.odor_sensor_sigma = _sensor("odor_sensor_sigma", 0.0)
         self.odor_noise_strength = _sensor("odor_noise_strength", 0.0)
         self.risk_sensor_sigma = _sensor("risk_sensor_sigma", 1.4)
+        self.alpha_adapt = _sensor("alpha_adapt", 0.0)
         self.prev_local_food = 0.0
+        self.odor_baseline = 0.0
 
         seed = int(config.get("seed", 0)) + 17
         self.rng = np.random.default_rng(seed)
@@ -158,15 +160,22 @@ class MinimalEnactiveAgent(BaseAgent):
         This is the agent's active sensing — observation is an act, not a gift.
         Sensor parameters (sigma) belong to the agent, not the environment.
 
-        Two sensing modes:
+        Sensing modes:
           - Direct food sensing (odor_sensor_sigma == 0): detects food level via
             food_sensor_sigma. Sharp falloff, no residual after depletion.
           - Odor-based sensing (odor_sensor_sigma > 0): detects odor field via
             odor_sensor_sigma (wider range). Depleted patches still smell.
             Temporal noise simulates turbulent plume.
+
+        Sensory adaptation (alpha_adapt > 0):
+          Maintains an adapted baseline of the odor signal via leaky integration.
+          observation[0] becomes the deviation from baseline instead of raw level.
+          This mimics receptor adaptation in E. coli — the agent reacts to
+          change relative to what has become locally normal, not absolute level.
+          food_delta remains the raw signal derivative (not adapted).
         """
         use_odor = self.odor_sensor_sigma > 0
-        local_food = 0.0
+        raw_food = 0.0
         for patch in env_state.patches:
             d = np.linalg.norm(env_state.pos - patch.center)
             if use_odor:
@@ -176,26 +185,35 @@ class MinimalEnactiveAgent(BaseAgent):
                 sigma = self.food_sensor_sigma
                 source = patch.level
             spatial = np.exp(-(d ** 2) / (2 * sigma ** 2))
-            local_food += source * spatial
+            raw_food += source * spatial
 
         # Add temporal noise to odor sensing (turbulent plume)
         if use_odor and self.odor_noise_strength > 0:
-            local_food += self.rng.normal(0.0, self.odor_noise_strength)
+            raw_food += self.rng.normal(0.0, self.odor_noise_strength)
 
-        local_food = float(np.clip(local_food, 0.0, 1.0))
+        raw_food = float(np.clip(raw_food, 0.0, 1.0))
+
+        # Sensory adaptation: baseline tracks raw signal, output is deviation
+        if self.alpha_adapt > 0:
+            self.odor_baseline += self.alpha_adapt * (raw_food - self.odor_baseline)
+            food_signal = float(raw_food - self.odor_baseline)
+        else:
+            food_signal = raw_food
 
         d_risk = np.linalg.norm(env_state.pos - env_state.risk_center)
         risk_base = env_state.risk_strength * np.exp(-(d_risk ** 2) / (2 * self.risk_sensor_sigma ** 2))
         local_risk = float(np.clip(risk_base + env_state.risk_spike, 0.0, 1.0))
 
-        food_delta = local_food - self.prev_local_food
-        self.prev_local_food = local_food
+        # food_delta is always from the raw signal (not adapted)
+        food_delta = raw_food - self.prev_local_food
+        self.prev_local_food = raw_food
 
-        return np.array([local_food, local_risk, food_delta], dtype=float)
+        return np.array([food_signal, local_risk, food_delta], dtype=float)
 
     def reset(self) -> None:
         self.h.fill(0.0)
         self.u.fill(0.0)
+        self.odor_baseline = 0.0
         self.m = np.ones(self.m_dim, dtype=float) / self.m_dim
         self.prev_local_food = 0.0
 

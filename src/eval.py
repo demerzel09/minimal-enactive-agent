@@ -66,4 +66,71 @@ def compute_metrics(log: Dict) -> Dict[str, float]:
         "mode_persistence": mode_persistence,
         "history_dependence_proxy": history_dependence,
     }
+
+    # Patch diversity metrics (require layout + patch_levels in log)
+    if "layout" in log and "patch_levels" in log:
+        layout = log["layout"]
+        n_patches = layout.get("n_patches", 0)
+        patch_centers = layout.get("patch_centers", [])
+        patch_radii = layout.get("patch_radii", [])
+        patch_levels = np.asarray(log["patch_levels"], dtype=float)  # [steps, n_patches]
+
+        if n_patches > 0 and len(patch_centers) == n_patches:
+            # Which patch is the agent inside at each step?
+            patch_ids = []
+            for t in range(len(x)):
+                pid = -1
+                for i in range(n_patches):
+                    cx, cy = patch_centers[i]
+                    r = patch_radii[i]
+                    if (x[t] - cx) ** 2 + (y[t] - cy) ** 2 <= r ** 2:
+                        pid = i
+                        break
+                patch_ids.append(pid)
+            patch_ids = np.array(patch_ids, dtype=int)
+
+            visited = set(patch_ids[patch_ids >= 0])
+            metrics["unique_patches_visited"] = float(len(visited))
+            metrics["unique_patch_fraction"] = float(len(visited) / n_patches)
+
+            # Depleted revisit: visits where patch level < 20% of max
+            in_any = patch_ids >= 0
+            if in_any.sum() > 0:
+                depleted_visits = 0
+                total_visits = 0
+                for t in range(len(patch_ids)):
+                    pid = patch_ids[t]
+                    if pid >= 0:
+                        total_visits += 1
+                        max_food_i = patch_levels[0, pid] if patch_levels[0, pid] > 0 else 0.5
+                        if patch_levels[t, pid] < 0.2 * max_food_i:
+                            depleted_visits += 1
+                metrics["depleted_revisit_fraction"] = float(
+                    depleted_visits / max(1, total_visits)
+                )
+            else:
+                metrics["depleted_revisit_fraction"] = 0.0
+
+            # Time to leave after depletion starts (per patch visit)
+            leave_times = []
+            for pid in visited:
+                # Find contiguous runs inside this patch
+                in_this = (patch_ids == pid).astype(int)
+                runs = _positive_run_lengths(in_this)
+                # For each run, check if patch was depleting
+                idx = 0
+                for run_len in runs:
+                    while idx < len(in_this) and in_this[idx] == 0:
+                        idx += 1
+                    start = idx
+                    end = min(start + run_len, len(patch_levels))
+                    if end > start and end <= len(patch_levels):
+                        levels_during = patch_levels[start:end, pid]
+                        if len(levels_during) > 1 and levels_during[0] > levels_during[-1]:
+                            leave_times.append(run_len)
+                    idx = end
+            metrics["avg_time_to_leave_depleted"] = float(
+                np.mean(leave_times) if leave_times else 0.0
+            )
+
     return metrics
