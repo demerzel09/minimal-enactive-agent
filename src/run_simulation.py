@@ -48,9 +48,12 @@ def run_episode(
 
     steps = int(config["simulation"].get("steps", 400))
 
+    n_patches = len(env_state.patches)
+
     log = {
         "x": [],
         "y": [],
+        "heading": [],
         "local_food": [],
         "local_risk": [],
         "in_patch": [],
@@ -59,7 +62,24 @@ def run_episode(
         "m": [],
         "action_turn": [],
         "action_speed": [],
+        # Per-patch time series for animation
+        "patch_levels": [],   # [[p0, p1, ...], ...]
+        "odor_levels": [],    # [[p0, p1, ...], ...]
     }
+
+    # Static layout info (stored once, not per-step)
+    log["layout"] = {
+        "world_size": env.get_layout().get("world_size", 20.0),
+        "patch_centers": env.get_layout().get("patch_centers", []),
+        "patch_radii": env.get_layout().get("patch_radii", []),
+        "risk_center": env.get_layout().get("risk_center", [0, 0]),
+        "risk_radius": env.get_layout().get("risk_radius", 0),
+        "n_patches": n_patches,
+    }
+    # Ensure layout values are JSON-serializable
+    rc = log["layout"]["risk_center"]
+    if hasattr(rc, "tolist"):
+        log["layout"]["risk_center"] = rc.tolist()
 
     for _ in range(steps):
         step = agent.step(obs)
@@ -68,6 +88,7 @@ def run_episode(
 
         log["x"].append(step_info.info["x"])
         log["y"].append(step_info.info["y"])
+        log["heading"].append(float(env_state.heading))
         log["local_food"].append(float(step.observation[0]))
         log["local_risk"].append(float(step.observation[1]))
         log["in_patch"].append(step_info.info["in_patch"])
@@ -76,6 +97,8 @@ def run_episode(
         log["m"].append(step.m.tolist())
         log["action_turn"].append(float(step.action[0]))
         log["action_speed"].append(float(step.action[1]))
+        log["patch_levels"].append([p.level for p in env_state.patches])
+        log["odor_levels"].append([p.odor_level for p in env_state.patches])
 
     metrics = compute_metrics(log)
 

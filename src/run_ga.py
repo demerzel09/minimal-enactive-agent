@@ -163,8 +163,7 @@ def _load_config(path: str) -> Dict:
 
 def _run_genome_on_env(decoded: Dict, config_path: str, seed: int, env_name: str) -> float:
     """Run a single decoded genome on one environment/seed. Returns fitness score."""
-    from src.agent import MinimalEnactiveAgent
-    from src.env import ForagingEnv
+    from src.registry import create_env, create_agent
     from src.eval import compute_metrics
 
     base_cfg = _load_config(config_path)
@@ -173,8 +172,8 @@ def _run_genome_on_env(decoded: Dict, config_path: str, seed: int, env_name: str
     cfg["simulation"]["output_dir"] = f"outputs/ga_eval/{env_name}/seed_{seed}"
     cfg["model"]["init_mode"] = "handtuned"
 
-    env = ForagingEnv(cfg)
-    agent = MinimalEnactiveAgent(cfg)
+    env = create_env(cfg)
+    agent = create_agent(cfg)
     apply_genome_to_agent(agent, decoded)
 
     env_state = env.reset()
@@ -217,20 +216,25 @@ def _run_genome_on_env(decoded: Dict, config_path: str, seed: int, env_name: str
 
 
 def evaluate_fitness(genome: np.ndarray, verbose: bool = False,
-                     env_filter: str | None = None) -> float:
-    """Evaluate genome across challenge environments.
+                     env_filter: str | None = None,
+                     env_configs: Dict[str, str] | None = None) -> float:
+    """Evaluate genome across environments.
 
     Args:
-        env_filter: If set, only evaluate on this single environment name.
-                    If None, evaluate across all environments (universal).
+        env_filter: If set, only evaluate on this single environment name
+                    from the active env_configs set.
+        env_configs: Dict mapping env names to config paths.
+                     If None, uses CHALLENGE_CONFIGS (legacy 7 environments).
     """
     decoded = decode_genome(genome)
     total_score = 0.0
 
+    configs = env_configs if env_configs is not None else CHALLENGE_CONFIGS
+
     if env_filter is not None:
-        target = {env_filter: CHALLENGE_CONFIGS[env_filter]}
+        target = {env_filter: configs[env_filter]}
     else:
-        target = CHALLENGE_CONFIGS
+        target = configs
 
     for env_name, config_path in target.items():
         env_scores = []
@@ -299,11 +303,13 @@ def run_ga(
     seed: int = 42,
     verbose: bool = True,
     env_filter: str | None = None,
+    env_configs: Dict[str, str] | None = None,
 ) -> Dict:
     """Run GA optimization.
 
     Args:
         env_filter: If set, optimize for a single environment only.
+        env_configs: Custom environment config set. If None, uses CHALLENGE_CONFIGS.
     """
     rng = np.random.default_rng(seed)
     n = genome_length()
@@ -325,7 +331,7 @@ def run_ga(
         t0 = time.time()
 
         # Evaluate fitness
-        fitness = np.array([evaluate_fitness(g, env_filter=env_filter) for g in population])
+        fitness = np.array([evaluate_fitness(g, env_filter=env_filter, env_configs=env_configs) for g in population])
 
         # Track stats
         gen_best = int(np.argmax(fitness))
