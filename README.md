@@ -33,6 +33,10 @@ LLM に欠け、スケーリングでは自動的に出てこない。
 
 > 詳細: `docs/intelligent_subject.md`（知性主体）,
 > `docs/concept_lattice_role_locus.md`（役割×所在×時間スケールの格子と 2024–2026 文献マップ）
+>
+> 現行の実装・評価計画（仕切り直し v2）: `docs/redesign_viability_first.md`
+> ——死にうる環境を入れ h を実エネルギーに接地し、出力変数を viability にして
+> 「precariousness は内部状態を接地するか」を段階的ファクトリアルで判定する。
 
 ### 中心命題（＝検証されるべき賭け）
 
