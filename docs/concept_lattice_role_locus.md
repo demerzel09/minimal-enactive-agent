@@ -5,7 +5,7 @@
 > 主体・知性・予測・環境・生物という諸概念の **内包/関連** を、A/B/C という
 > 個体レベルの分類より一段抽象的な座標系で整理する。
 > 起点: 「植物は主体だが予測しない。種を主体と見れば予測なき知性ではないか」という観察。
-> 文献マップ（§6）は 2024–2026 の deep-research（敵対的検証済み）に基づく。
+> 文献マップ（§6）は 2024–2026 の deep-research（2 パス・敵対的検証済み）に基づく。
 > 関連: `intelligent_subject.md`, `research_philosophy.md`, `analysis_primitive_foraging.md`,
 > `cognition_coupling_principles.md`, `critical_review_meta_neuro_evo.md`
 
@@ -116,7 +116,7 @@ A の主体性が"個体の locus"に属する** から。**所在が違うか�
 - **意味論/全体化批判**: Sheikhbahaee, Safron, Hesp & Dumas (2023/24) *Physics of Life Reviews* 47:276。「全適応・有情・認知系を統一する」という過剰野心と定義の混乱を指摘。
 - FEP 推進側自身の譲歩: 「FEP は万物理論ではなく、**Markov blanket を持つ万物**の理論にすぎない」（Ramstead et al. 2023）。
 
-### 6.3 予測に潰さない多スケール候補（本プロジェクトに最も近い）[検証済]
+### 6.3 スケールフリー知性の系 — 調整ファースト [検証済]
 
 - **Michael Levin (2025)** "The Multiscale Wisdom of the Body," *BioEssays* 47(3):e202400196。
   身体＝細胞の **集合的知性**。知性は William James 流に機能的・スケールフリー（「同じ目標に別の手段で至る」）。
@@ -141,35 +141,93 @@ A の主体性が"個体の locus"に属する** から。**所在が違うか�
 
 - **植物認知** (Calvo ら): Segundo-Ortin, Ponkshe, Lee & Calvo (2025) "Plant Cognition — A Methodological Primer," *Philosophy Compass*。認知役割を **植物個体 locus** へ拡張（懐疑文献も存在）。
 
-### 6.4 本調査で名指ししたが検証主張に残らなかった脈絡 [未検証]
+### 6.4 自己維持ファーストの系（最も近い） — 第二調査で確認 [検証済]
 
-不在の証拠ではない。今後 deep-research で当てるべき脈絡（自己知識による暫定）:
+主体を予測ではなく **自己維持/制御の閉包** に根づける、非 FEP の系。
+本プロジェクトの「構成的自己維持＝自己所有の目的」（`intelligent_subject.md`）と最も直接に響く。
 
-- **進化＝学習/多階層学習**: Watson & Szathmáry; Vanchurin, Wolpert, Katsnelson, Frenkel「multilevel learning としての進化」。← §3 の「適応＝所在自由な BVSR」の最有力候補。
-- **生物的自律/組織的閉包**: Moreno & Mossio; Kathryn Nave『A Drive to Survive』(MIT Press); Kauffman（制約閉包）; Deacon（teleodynamics）; Philip Ball『How Life Works』(2024)。← 自己維持を根に置く非 FEP 統一の候補。
-- **エナクティヴィズム/生命-心の連続**: Di Paolo, Thompson, De Jaegher（adaptivity＝オートポイエーシスへの最小付加）。
-- **ダーウィン的個体性**: Godfrey-Smith（何が"主体/個体"か＝§1 の locus 可動性）。
-- **明示的予測なき先読み**: Conant–Ashby の良い調整器定理、Rosen の anticipatory systems の現代的復権。
-- **AI 側のエージェンシー定義/計測**: open-endedness（Clune/Rocktäschel 系）、LeCun の intrinsic cost（旧脳/動因モジュールを学習認知から分離）。← `cognition_coupling_principles.md` と接続。
+- **Kauffman & Roli (2025)** "Is the emergence of life and of agency expected?" *Phil. Trans. R. Soc. B* 380(1936):20240283。
+  エージェンシーを **制約閉包＋熱力学的仕事サイクル＋「自分にとって良い/悪い」という規範** に根づける
+  （予測・ベイズ・自由エネルギーへの言及ゼロ）。**入れ子の Kantian wholes**（原核細胞＝1次 → 真核細胞＝2次
+  → 多細胞個体＝3次 → 人＋腸内細菌叢＝4次）で、**所在をまたぐ唯一の明示的な包含構造**を与える。
+  自然選択は全体に直接、部分に間接的に働く。
+  - 但し: これは包含 **階層** であって形式的 **格子** ではなく、**時間スケール軸がない**（この点の検証票は 2-1、異論は「lattice は言い過ぎ」）。
+
+- **Nave (2024/2025)** 『A Drive to Survive: The Free Energy Principle and the Meaning of Life』MIT Press（OA 単行本, ISBN 9780262551328）。
+  **FEP を正面から批判** —— FEP はロウソクやハリケーンにも当てはまるので生命には広すぎかつ狭すぎる。
+  積極的代替は **生物的自律＋制約閉包** に根ざす bioenactivism：個体性・エージェンシー・志向性を、
+  **非表象・非推論的な自己維持の目標への志向** に根づける。機械と生物を分けるのは precariousness と
+  能動的な代謝的自己産出。**自己維持ファースト・非予測ファースト**。（査読付き単行本。）
+
+- **Bich (2024)** "Organisational teleology 2.0: Grounding biological purposiveness in regulatory control," *Ratio* 37(4):327–340。
+  目的性を **調整的制御(regulatory control)** に根づける —— 自己産出だけの制約閉包は狭すぎるとし、
+  系が自らの内部動態と行動を制御して自己を維持する能力に置く。本文に予測・推論・ベイズ・自由エネルギーの語ゼロ。
+  **予測/内部モデルは調整の下位に従属** —— §3 の「予測は調整の特殊形」の最も明示的な実例。
+
+- **Moreno & Mossio (2015)** 『Biological Autonomy』Springer（系の背骨。窓外だが上記すべての土台）。
+  組織的/制約閉包により、生物は自己産出・自己維持し、自らの目標と規範を立てる。非 FEP・自己維持ファースト。
+
+### 6.5 進化＝学習の系 — 格子はあるが予測含み [検証済]
+
+所在/時間スケールの **明示的な格子構造** を持つが、選択/最適化ファーストでありつつ
+**予測を生存の構成要素として再導入** し、かつ自己維持には根ざさない。
+
+- **Vanchurin, Wolf, Katsnelson & Koonin (2022)** "Toward a theory of evolution as multilevel learning," *PNAS* 119(6):e2120037119。
+  損失最小化を選択（MCMC/SGD/GA）で実装＝**ベイズ推論ではない**。周波数ギャップで分かれる
+  **多階層・多時間スケール格子**（環境/表現型/遺伝型＋主要進化遷移ごとに新スケール）を持つ。
+  **ただし**「生存には環境応答の予測が必要」と予測を構成的に再導入（P7：遅い層が速い層へ予測のため情報を渡す）。
+  格子はあるが予測含み・学習/損失ファーストで、自己維持ファーストではない。
+- **Vanchurin (2026)** "Geometric framework for biological evolution," arXiv:2603.15198 ＋ 査読版
+  "Geometric Learning Dynamics," *Biological Cybernetics* 2026。Lande 方程式を適応度地形上の共変勾配上昇として再定式化。
+  機構は予測フリーだが **単一集団で、多スケールでも自己維持でもエージェンシーでもない**。（preprint＋査読版。）
+- **Watson, Levin et al. (2024)** "Natural Induction: Spontaneous Adaptive Organisation without Natural Selection," *Entropy* 26(9):765。
+  **自然選択なし** で適応的組織化が起きる非選択・非予測ファーストの機構：二時間スケールの物理的学習
+  （速い状態緩和＋遅い粘弾性的構造順応）で、Hopfield/Hebb 的に「より良い解を選好」。**個体内** 適応を
+  二つの結合した時間スケールで行う、所在自由な「適応＝物理的学習」経路。続報 Watson et al. (2025)
+  "Evolution by natural induction," *Interface Focus*。
+- **Watson (2023/24)** "Agency, Goal-Directed Behavior, and Part-Whole Relationships in Biological Systems," *Biological Theory* 19(1):22–36。
+  **スケール相対の定量的エージェンシー**（全体のエージェンシーは部分の和を超えうる；細胞・個体・他のスケールに適用）。
+  動的系の制約/フラストレーション解消に根づけ、**Friston の変分自由エネルギーと明示的に区別**（＝非予測ファースト）。
+  §1 の「主体の locus は固定でない」を直接支持。（ただし「FEP と関連はするが別物」＝拒否ではなく兄弟。）
+
+### 6.6 まだ埋まらない脈絡 [未検証]
+
+第二調査でも検証主張に残らなかった（不在の証拠ではない）:
+
+- **エナクティヴィズムの形式/計算的展開**（Di Paolo, Thompson, De Jaegher）— sense-making/adaptivity の計算モデルは確認できず、綱領段階の可能性。
+- **ダーウィン的個体性**（Godfrey-Smith『Living on Earth』2024 ほか）— 主体の locus 可動性の最新の再定式化。
+- **明示的予測なき先読み**（Conant–Ashby 良い調整器定理、Rosen 予期系の現代的復権）— 自律系(Bich/Kauffman)と学習系(Vanchurin/Koonin)を橋渡しする形式的実証は未確認。
+- **AI 側のエージェンシー定義/計測と旧脳分離**（open-endedness の Clune/Rocktäschel/Stanley、LeCun の H-JEPA intrinsic cost/configurator、homeostatic RL）— ソースは取得したが検証主張に残らず。`cognition_coupling_principles.md` の検証は今後の課題。
 
 ---
 
-## 7. 結論 — 空席があり、それがこのプロジェクトの席
+## 7. 結論 — 二つの陣営に割れ、空席が残る（それがプロジェクトの席）
 
-**2024–2026 時点で、合意された綺麗な格子は存在しない。** 分野は二分されている。
+**2024–2026 時点で、合意された綺麗な格子は存在しない。** 第二調査で、空席の形がより精密に見えた——
+分野は **二つの陣営** に割れ、それぞれが必要な半分しか持っていない。
 
-1. **唯一完成した多スケール統一(FEP)** は、生命/エージェンシーを近似推論に潰すことで統一を買い、
-   **過剰全体化・反証困難**と広く判定される。
-2. **調整/先読みファーストの代替**（Levin、Fields–Levin、基底認知）は予測ファーストを避けるが、
-   **まだ綱領的で、完成した形式格子ではない**。
+| 陣営 | 持つもの | 欠くもの |
+|---|---|---|
+| **自己維持ファースト**（Kauffman&Roli, Nave, Bich / Moreno&Mossio, Levin） | 主体の根（自己維持・制約閉包・調整）、予測に潰さない | 形式的な多スケール/時間スケール格子（Kauffman の入れ子 Kantian wholes が最も近いが、階層であって格子、時間軸なし） |
+| **進化＝学習**（Vanchurin/Koonin） | 明示的な所在×時間スケール格子 | 自己維持の根づけ。かつ予測を生存の構成要素として再導入 |
+| **FEP**（Friston ら） | 唯一完成した全スケール形式 | 全部を近似推論に潰す。過剰全体化・反証困難と判定 |
 
-> FEP は「予測に潰して」統一し、A/B/C は「個体に潰して」分類した。
-> **潰さずに（予測にも個体にも還元せず）、構成可能な形で 役割 × 所在 × 時間スケール を分けて建てる**
-> ——これがまだ誰もやっていない、かつこのプロジェクトが構成論的にやれる仕事である。
+> **自己維持ファーストは主体を根づけるが格子を欠き、進化＝学習は格子を持つが予測含みで主体を欠く。**
+> **両者を、予測に潰さず・自己維持に根づけて接合する** —— これを誰もやっていない。
 
-最も近い隣人は **Levin（調整ファースト・スケールフリー・cognitive light cone）**。
-本プロジェクトは Levin に対し、(a) **個体 locus の最小の主体**を、(b) **構成的に動かして**検証する点で
-差別化される。植物・粘菌・大腸菌の例（§1, §4, `analysis_primitive_foraging.md`）が、その入口である。
+第二調査が定式化した未決問題が、まさにプロジェクトの問いである:
+
+> Kauffman & Roli の入れ子 Kantian wholes（包含階層）に **明示的な時間スケール軸** を入れて
+> role×locus×timescale 格子にできるか。それとも、主体を自己維持に根づけること（自律陣営）は、
+> 進化＝学習陣営が自然に達成する多時間スケール格子構造に **本質的に抵抗する** のか。
+
+> FEP は「予測に潰して」統一し、A/B/C は「個体に潰して」分類し、自律陣営は「格子を欠き」、学習陣営は「主体を欠く」。
+> **潰さず・主体に根づけ・構成可能な形で 役割 × 所在 × 時間スケール を建てる** —— これがプロジェクトの席。
+
+最も近い隣人は **Levin（調整ファースト・スケールフリー）と Bich（調整＝予測の上位）**。
+本プロジェクトは彼らに対し、(a) **個体 locus の最小の主体** を、(b) **構成的に動かして** 検証し、
+(c) その上に **時間スケール軸**（h の多時間スケール化、`analysis_primitive_foraging.md` §9）を
+**自己維持に根づけたまま** 載せられるかを問う点で差別化される。植物・粘菌・大腸菌の例が、その入口である。
 
 ---
 
@@ -177,5 +235,7 @@ A の主体性が"個体の locus"に属する** から。**所在が違うか�
 
 > A/B/C が不十分なのは役割を「個体」という単一 locus に束ねたから。鍵は〈役割 × 所在 × 時間スケール〉の
 > 3 軸分解で、同じ役割（予測・知性・適応）が別の所在に住みうると見ること。これで植物個体:系統 = LLM:コーパス
-> が一枚に乗る。2024–2026 の文献では、唯一の完成統一(FEP)は"全部予測"で買っており批判が集中、
-> 予測に潰さない多スケール統一(Levin ら)は綱領段階——**その空席が、潰さず構成的に建てる本プロジェクトの席**。
+> が一枚に乗る。2024–2026 の文献では、完成統一の FEP は"全部予測"で買い批判が集中、
+> 自己維持ファースト陣営(Kauffman/Nave/Bich)は主体を根づけるが格子を欠き、進化＝学習陣営(Vanchurin/Koonin)は
+> 格子を持つが予測含みで主体を欠く——**両者を潰さず接合し、自己維持に根づけて role×locus×timescale を
+> 構成的に建てる空席が、本プロジェクトの席**。
