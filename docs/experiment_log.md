@@ -1243,3 +1243,54 @@ regen=0.0（再生なし）でも full model は 2 パッチ固着。
 h との統合が次の課題であり、最小の検証は W_hi の food 重みを拡大すること（H1 の直接検証）。
 
 詳細な数値、全条件の比較、仮説の一覧は [experiment_odor_field.md](experiment_odor_field.md) を参照。
+
+---
+
+## 実験 10: viability 導入（T1）— 賭け金は実験9の崩壊を解消するか
+
+仕切り直し（[redesign_viability_first.md](redesign_viability_first.md)）Phase 0 の核心テスト。
+実験9で「h あり(full)が匂い場で局所 trap して崩壊、no_h が広域巡回」だった。
+仮説：**賭け金（energy/死）を入れれば、枯渇パッチは energy を生まない → 欠損が h を駆動して脱出する**。
+
+### 設定
+
+- 環境: 匂い場（10 パッチ、感覚適応 alpha_adapt=0.015）＋ energy 有効
+  （metabolic_cost=0.0008, move_cost_coef=0.0015, energy_gain_coef=1.5, regen=0.01）
+- energy はどこにも報酬として現れない。0 で死＝ループ停止。h は内受容経路 `W_he·deficit` で energy に接地。
+- full（use_h=true）vs no_h（use_h=false）を同一環境で比較。主指標は **viability**（生存・energy）。
+- config: `configs/odor_field_viability.yaml`, `configs/odor_field_viability_no_h.yaml`、2000 steps、seed 7。
+
+### 結果
+
+| 条件 | survival | 死 | 訪問パッチ | mean_energy | 遷移 |
+|---|---|---|---|---|---|
+| **full (h)** | 829 | 死 | **1/10** | 0.64 | 10 |
+| **no_h** | **2000** | 生存 | **8/10** | 0.88 | 46 |
+
+（より厳しい energy（cost 約2倍）でも方向は同一：full 360死・1パッチ / no_h 719死・4パッチ。）
+
+### 所見（正直な暫定判定）
+
+- **賭け金を入れても、手調整の重みでは崩壊は解消しなかった。** full は依然 1 パッチに trap して死に、
+  no_h は完走（2000）して 8 パッチを巡回。**実験9と同じ方向（no_h > full）**。
+- camping は設計上不可能（パッチ内では再生せず消費のみ）なので、生存＝真に巡回できたことを意味する。
+  従って no_h の完走は「広域巡回での自己維持」、full の死は「trap からの脱出失敗」。
+
+### 機構仮説（なぜ energy 接地でも full は trap するか）
+
+h は **誤導的な外受容（odor 偏差 W_hi）と内受容（energy W_he）の両方**を受け、同じ遅い低域 h の中で競合する。
+**odor 経路が勝って exploit/trap を維持**し、energy 欠損が h に効く頃には手遅れ（α_h=0.04 は遅い）。
+no_h は h を持たないので odor に乗っ取られる内部状態がなく、直接経路＋適応で素直に新鮮な勾配へ移る。
+→ **「h を energy に接地する」だけでは不足。h が依然 trap を生む odor を受けているのが効いている可能性。**
+
+### 次のステップ（パラメータ問題 vs アーキテクチャ制約の分離）
+
+[environment_first_roadmap.md](environment_first_roadmap.md) §9 の手法に従い、**アーキテクチャ制約と断ずる前に GA で
+パラメータ問題を除外**する。viability（survival/mean_energy）を適応度として全重み（W_he 含む）を GA 最適化し、
+GA-full が GA-no_h に追いつくか検証する。
+
+- 追いつく → 手調整 W_he が悪かっただけ（パラメータ問題）。ポジション前進。
+- 追いつかない → energy 接地下でも h は trap を脱せない（アーキテクチャ制約）。
+  次の最小増築候補は「h への odor 入力 W_hi の扱い」や「内受容/外受容の h/m 分業の再検討」。
+
+いずれの結果も棄却基準（[research_philosophy.md](research_philosophy.md) §11）への一票として記録する。

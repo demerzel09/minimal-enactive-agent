@@ -1,0 +1,55 @@
+# T1 control: odor field + viability, no_h ablation (use_h: false).
+# Compare against odor_field_viability.yaml (full). In experiment 9 (no energy)
+# no_h thrived (8-10 patches) while full collapsed. The question now: with
+# stakes, does grounding h in energy let full catch up to / beat no_h?
+# Identical to odor_field_viability.yaml except use_h: false and output_dir.
+environment:
+  alpha_adapt: 0.015
+  food_sensor_sigma: 4.0
+  odor_decay_rate: 0.004
+  odor_noise_strength: 0.04
+  odor_sensor_sigma: 3.5
+  patch_regen_rate: 0.01
+  patches:
+  - {center: [5.0, 6.0], depletion_rate: 0.08, max_food: 0.5, radius: 1.2}
+  - {center: [10.0, 3.0], depletion_rate: 0.07, max_food: 0.4, radius: 1.0}
+  - {center: [18.0, 5.0], depletion_rate: 0.09, max_food: 0.55, radius: 1.3}
+  - {center: [26.0, 8.0], depletion_rate: 0.08, max_food: 0.4, radius: 1.0}
+  - {center: [3.0, 15.0], depletion_rate: 0.07, max_food: 0.45, radius: 1.2}
+  - {center: [13.0, 13.0], depletion_rate: 0.08, max_food: 0.55, radius: 1.5}
+  - {center: [22.0, 14.0], depletion_rate: 0.07, max_food: 0.4, radius: 1.0}
+  - {center: [7.0, 23.0], depletion_rate: 0.08, max_food: 0.5, radius: 1.3}
+  - {center: [16.0, 25.0], depletion_rate: 0.09, max_food: 0.45, radius: 1.2}
+  - {center: [25.0, 22.0], depletion_rate: 0.07, max_food: 0.4, radius: 1.0}
+  risk_center: [14.0, 8.0]
+  risk_noise_prob: 0.03
+  risk_noise_strength: 0.3
+  risk_radius: 1.5
+  risk_sensor_sigma: 1.4
+  risk_strength: 0.6
+  start_heading: 0.3
+  start_pos: [15.0, 15.0]
+  step_size: 0.7
+  turn_angle: 0.45
+  type: odor_field
+  world_size: 30.0
+  # --- viability / metabolism ---
+  energy_enabled: true
+  energy_max: 1.0
+  energy_init: 1.0
+  metabolic_cost: 0.0008
+  move_cost_coef: 0.0015
+  energy_gain_coef: 1.5
+model:
+  alpha_h: 0.04
+  alpha_m: 0.4
+  h_dim: 2
+  init_mode: handtuned
+  m_dim: 3
+  obs_dim: 3
+  use_h: false
+  use_m: true
+seed: 7
+simulation:
+  output_dir: outputs/t1_odor_viability/no_h
+  steps: 2000
