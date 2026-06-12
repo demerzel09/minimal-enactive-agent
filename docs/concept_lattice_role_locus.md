@@ -5,7 +5,7 @@
 > 主体・知性・予測・環境・生物という諸概念の **内包/関連** を、A/B/C という
 > 個体レベルの分類より一段抽象的な座標系で整理する。
 > 起点: 「植物は主体だが予測しない。種を主体と見れば予測なき知性ではないか」という観察。
-> 文献マップ（§6）は 2024–2026 の deep-research（2 パス・敵対的検証済み）に基づく。
+> 文献マップ（§6）は 2024–2026 の deep-research（3 パス・敵対的検証済み）に基づく。
 > 関連: `intelligent_subject.md`, `research_philosophy.md`, `analysis_primitive_foraging.md`,
 > `cognition_coupling_principles.md`, `critical_review_meta_neuro_evo.md`
 
@@ -199,6 +199,49 @@ A の主体性が"個体の locus"に属する** から。**所在が違うか�
 - **明示的予測なき先読み**（Conant–Ashby 良い調整器定理、Rosen 予期系の現代的復権）— 自律系(Bich/Kauffman)と学習系(Vanchurin/Koonin)を橋渡しする形式的実証は未確認。
 - **AI 側のエージェンシー定義/計測と旧脳分離**（open-endedness の Clune/Rocktäschel/Stanley、LeCun の H-JEPA intrinsic cost/configurator、homeostatic RL）— ソースは取得したが検証主張に残らず。`cognition_coupling_principles.md` の検証は今後の課題。
 
+### 6.7 エナクティブ系統 — 本プロジェクトの直接の家系 [検証済・第三調査]
+
+プロジェクト名「minimal **enactive** agent」の通り、系統的にはここが本籍。第三調査の判定は明快——
+**最小エナクティブ・エージェンシー（閉ループ＋内部状態＋viability/コヒーレンス駆動、無報酬・モデルなし）は、
+2024–2026 で「活発な哲学＋まばらで多くが旧来の玩具的な計算実装」** という状態。
+
+**概念的土台（プロジェクトの設計思想そのもの）:**
+- **Barandiaran, Di Paolo & Rohde (2009)** "Defining Agency," *Adaptive Behavior* 17(5):367–386。
+  エージェンシー＝**個体性＋相互作用の非対称性＋規範性**、すべて報酬ではなく **viability** に根づく。
+  生成的定義（逐語）:「エージェントとは、**自らの viability 条件が定める規範に従って**環境との結合を
+  適応的に調整できる自律的組織である」。← 本プロジェクトの中心命題と完全に一致。2024 でも現役
+  （Sepúlveda-Pedro & Mojica 2024, *Phil. Trans. R. Soc. B* 379(1910):20230286）。
+- **Di Paolo (2005)** "Autopoiesis, adaptivity, teleology, agency," *Phenom. Cogn. Sci.* 4(4):429–452。
+  **adaptivity（viability 境界に対する自己調整）＝オートポイエーシスへの最小の追加** で sense-making と規範が出る。
+  自己維持「だけ」では sense-making に不十分——これが viability/コヒーレンス駆動の最小エージェントが
+  operationalize すべき正確な標的（「viability set」概念）。
+- **規範＝precariousness 由来**（逐語）:「惑星は法則に"失敗"できない。エージェントは相互作用を能動的に調整し、
+  その調整は規範に照らして失敗も成功もしうる」——本プロジェクトの「コヒーレンス＝存続可能性＋探索連続性」の正準的な根。
+
+**最も近い計算的隣人（多くが旧来 2010–2016）:**
+- **Egbert, Barandiaran & Di Paolo (2010)** "A Minimal Model of Metabolism-Based Chemotaxis," *PLoS Comput. Biol.* 6(12):e1001004。
+  **正準的な無報酬・無適応度・モデルなし・viability 駆動の行動エージェント**。「行動は環境への反応ではなく、
+  環境が代謝に及ぼす影響への反応」。化合物に内在価値はなく、意味は代謝動態に対する関係的性質。
+- **Beer, McShaffrey & Gaul (2024)** "Deriving The Intrinsic Viability Constraint of an Emergent Individual from First Principles," *ALIFE 2024 Proc.*, MIT Press, DOI 10.1162/isal_a_00739。
+  **唯一の 2024 の前進**：作動的閉鎖から viability 制約を内在的に導出（Game of Life グライダー）。
+  ただし内部状態・行動モードを持つ感覚運動エージェントではない玩具。
+- **Aguilera (2015–2016 ほか)** 最小の感覚運動エージェンシー/神経ロボティクスモデル（*PLoS ONE* 2015; *Front. Syst. Neurosci.* 2016）。
+  近年は確率熱力学の最小自律エージェント（"Thermina"）。Aguilera 自身が FEP 批判者。
+- 他: **Randall Beer** の CTRNN 最小認知プログラム、**Barandiaran–Egbert**「behavioral metabolution」(*Artificial Life* 2012)。
+
+**FEP への明示的な境界線（系統が予測ファーストと引く線）:**
+- **Di Paolo, Thompson & Beer (2022)** "Laying down a forking path: Tensions between enaction and the free energy principle," *Philosophy and the Mind Sciences* 3, DOI 10.33735/phimisci.2022.9187。
+  「現在定式化された FEP は、オートポイエーシス/エナクションと **統合困難どころか緊張関係にある**」。
+  核心の緊張: FEP は NESS＋Markov blanket の **時間不変性** を仮定するが、これは sense-making の **歴史性**
+  （エージェントは変数・パラメータ集合・制約・力学法則そのものを時間とともに変えうる）と両立しない。
+  adaptivity＝「viability 喪失へ向かう軌道の回避＝力学的地形そのものの調整」。
+  対する FEP 側: Ramstead, Kirchhoff & Friston (2019/20)「active inference is enactive inference」（両立を主張、DTB2022 は誤読として反論）。
+
+**規範/viability の operationalize と locus-scaling（概念のみ・未実装）:**
+- **Mojica (2021)** *HPLS* 43(4):127 ＋ **Di Paolo, Cuffari & De Jaegher『Linguistic Bodies』(2018, MIT Press)**:
+  同一の自己維持規範が **有機 → 感覚運動 → 間主観/言語** へスケールする（locus 軸）——ただし **完全に概念的で、
+  計算的には未実装**。これがまさに本プロジェクトの §1–§5 の locus 軸に対応する空席。
+
 ---
 
 ## 7. 結論 — 二つの陣営に割れ、空席が残る（それがプロジェクトの席）
@@ -229,6 +272,22 @@ A の主体性が"個体の locus"に属する** から。**所在が違うか�
 (c) その上に **時間スケール軸**（h の多時間スケール化、`analysis_primitive_foraging.md` §9）を
 **自己維持に根づけたまま** 載せられるかを問う点で差別化される。植物・粘菌・大腸菌の例が、その入口である。
 
+### 7.1 本籍と空席 — エナクティブ最小エージェンシーの計算的系譜（第三調査）
+
+第三調査が、プロジェクトの **本籍と最近接の隣人** を確定した（§6.7）。
+本プロジェクトは **エナクティブ最小エージェンシーの計算的系譜**——Barandiaran/Di Paolo の viability 駆動
+エージェンシー定義、Egbert らの無報酬・モデルなし代謝エージェント、Beer の最小認知——に **直接属する**。
+そしてその系譜の空席は **具体的** である。エナクティヴィズムが概念的に主張したが、まだ建てていない:
+
+1. **viability に根づいた構成的な role × locus × timescale モデル**（locus-scaling は Mojica/Linguistic Bodies で概念のみ）
+2. **遅い内部状態を持つ多時間スケール・エージェント**（既存の Egbert/Aguilera/Beer モデルは単一時間スケール）
+3. **adaptivity（Di Paolo 2005）と明示的 locus 軸を結ぶ"走るコード"**
+4. **「コヒーレンス＝viability＋探索連続性」の形式化** を、代謝基質を超えた汎用の **遅い状態(h)＋行動モード(m)** アーキテクチャで
+
+> **遅い内部状態 ＋ 行動モードを持ち、無報酬・モデルなしで viability/コヒーレンスに駆動される最小エナクティブ・エージェント
+> ——それは、この空席にちょうど嵌まる。** 本プロジェクトの h/m アーキテクチャは、エナクティヴィズムが
+> 概念的に要求しながら計算的に欠いている、まさにその欠片である。
+
 ---
 
 ## 8. 一行での核
@@ -238,4 +297,6 @@ A の主体性が"個体の locus"に属する** から。**所在が違うか�
 > が一枚に乗る。2024–2026 の文献では、完成統一の FEP は"全部予測"で買い批判が集中、
 > 自己維持ファースト陣営(Kauffman/Nave/Bich)は主体を根づけるが格子を欠き、進化＝学習陣営(Vanchurin/Koonin)は
 > 格子を持つが予測含みで主体を欠く——**両者を潰さず接合し、自己維持に根づけて role×locus×timescale を
-> 構成的に建てる空席が、本プロジェクトの席**。
+> 構成的に建てる空席が、本プロジェクトの席**。第三調査でその本籍は **エナクティブ最小エージェンシーの
+> 計算的系譜**（Barandiaran/Di Paolo/Egbert/Beer）と確定し、空席は「viability 駆動・無報酬・モデルなしの、
+> 遅い状態＋行動モードを持つ多時間スケール×多 locus エージェント」——本プロジェクトの h/m がその欠片——だと判明した。
