@@ -1,0 +1,51 @@
+# Viability-first sanity config (redesign v2, Phase 0).
+# Single patch + energy/death enabled. The agent must leave a depleting patch
+# and return to refuel, or it starves. Energy is NOT a reward — it is the
+# condition under which the dynamics continue (death = loop stops).
+# See docs/redesign_viability_first.md.
+seed: 7
+
+model:
+  obs_dim: 3
+  h_dim: 2
+  m_dim: 3
+  alpha_h: 0.04
+  alpha_m: 0.40
+  init_mode: handtuned
+  use_h: true
+  use_m: true
+
+environment:
+  world_size: 20.0
+  step_size: 0.7
+  turn_angle: 0.45
+
+  start_pos: [7.0, 10.0]
+  start_heading: 0.1
+
+  patch_center: [10.0, 10.0]
+  patch_radius: 2.8
+  patch_max_food: 1.0
+  patch_depletion_rate: 0.035
+  patch_regen_rate: 0.004
+
+  risk_center: [14.5, 6.0]
+  risk_radius: 1.2
+  risk_strength: 0.9
+  risk_noise_prob: 0.03
+  risk_noise_strength: 0.5
+
+  food_sensor_sigma: 4.0
+  risk_sensor_sigma: 1.4
+
+  # --- viability / metabolism ---
+  energy_enabled: true
+  energy_max: 1.0
+  energy_init: 1.0
+  metabolic_cost: 0.002       # base per-step living cost
+  move_cost_coef: 0.004       # × distance moved (speed)
+  energy_gain_coef: 1.0       # × food consumed this step
+
+simulation:
+  steps: 1000
+  output_dir: outputs/viability/full

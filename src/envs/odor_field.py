@@ -73,4 +73,7 @@ class OdorFieldEnv(ForagingEnv):
             risk_spike=risk_spike,
             in_any_patch=any(self._in_patch_i(self.pos, i) for i in range(self.n_patches)),
             t=self.t,
+            energy=self.energy,
+            energy_max=self.energy_max,
+            alive=self.alive,
         )

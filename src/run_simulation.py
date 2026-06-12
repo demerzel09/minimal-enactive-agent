@@ -65,6 +65,9 @@ def run_episode(
         # Per-patch time series for animation
         "patch_levels": [],   # [[p0, p1, ...], ...]
         "odor_levels": [],    # [[p0, p1, ...], ...]
+        # Viability (only meaningful when the environment enables energy)
+        "energy": [],
+        "died": False,
     }
 
     # Static layout info (stored once, not per-step)
@@ -99,6 +102,13 @@ def run_episode(
         log["action_speed"].append(float(step.action[1]))
         log["patch_levels"].append([p.level for p in env_state.patches])
         log["odor_levels"].append([p.odor_level for p in env_state.patches])
+        log["energy"].append(float(step_info.info.get("energy", env_state.energy)))
+
+        # Viability: stop the rollout when the agent dies (energy hits 0).
+        # Death is the end of the dynamics, not a penalty.
+        if not bool(step_info.info.get("alive", True)):
+            log["died"] = True
+            break
 
     metrics = compute_metrics(log)
 

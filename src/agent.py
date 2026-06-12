@@ -60,6 +60,12 @@ class MinimalEnactiveAgent(BaseAgent):
         self.alpha_adapt = _sensor("alpha_adapt", 0.0)
         self.prev_local_food = 0.0
         self.odor_baseline = 0.0
+        # Interoceptive viability drive: energy deficit (0 = full, 1 = empty).
+        # Enters h via a dedicated pathway W_he, NOT via the observation i,
+        # so the exteroceptive/interoceptive distinction is preserved
+        # (architecture_principles.md 原則1). Stays 0 when energy is disabled,
+        # making behavior identical to the pre-viability model.
+        self.energy_deficit = 0.0
 
         seed = int(config.get("seed", 0)) + 17
         self.rng = np.random.default_rng(seed)
@@ -97,6 +103,8 @@ class MinimalEnactiveAgent(BaseAgent):
         self.W_hi = self.rng.normal(0.0, scale, size=(self.h_dim, self.obs_dim))
         self.b_h = self.rng.normal(0.0, 0.1, size=(self.h_dim,))
 
+        self.W_he = self.rng.normal(0.0, scale, size=(self.h_dim,))
+
         self.W_uh = self.rng.normal(0.0, scale, size=(self.m_dim, self.h_dim))
         self.W_uu = self.rng.normal(0.0, scale, size=(self.m_dim, self.m_dim))
         self.W_ui = self.rng.normal(0.0, scale, size=(self.m_dim, self.obs_dim))
@@ -132,6 +140,11 @@ class MinimalEnactiveAgent(BaseAgent):
         ])
         # Positive bias: depletion and exploration RISE by default (when no food)
         self.b_h = np.array([+0.3, +0.2])
+        # W_he: interoceptive energy-deficit -> h. Low energy (high deficit)
+        # strongly raises depletion pressure and mildly raises exploration drive.
+        # This gives b_h its intended meaning (metabolic drive for survival):
+        # the constant bias becomes a deficit-proportional drive.
+        self.W_he = np.array([+0.8, +0.3])
 
         # --- mode dynamics ---
         # W_uh: h -> mode (stronger influence so h actually drives switching)
@@ -208,6 +221,12 @@ class MinimalEnactiveAgent(BaseAgent):
         food_delta = raw_food - self.prev_local_food
         self.prev_local_food = raw_food
 
+        # Interoception: read the body's energy as a deficit in [0, 1].
+        # Stored separately, NOT returned in the observation vector.
+        emax = max(float(getattr(env_state, "energy_max", 1.0)), 1e-8)
+        energy = float(getattr(env_state, "energy", emax))
+        self.energy_deficit = float(np.clip(1.0 - energy / emax, 0.0, 1.0))
+
         return np.array([food_signal, local_risk, food_delta], dtype=float)
 
     def reset(self) -> None:
@@ -216,12 +235,19 @@ class MinimalEnactiveAgent(BaseAgent):
         self.odor_baseline = 0.0
         self.m = np.ones(self.m_dim, dtype=float) / self.m_dim
         self.prev_local_food = 0.0
+        self.energy_deficit = 0.0
 
     def step(self, obs: np.ndarray) -> AgentStep:
         obs = np.asarray(obs, dtype=float)
 
         if self.use_h:
-            h_tilde = np.tanh(self.W_hh @ self.h + self.W_hm @ self.m + self.W_hi @ obs + self.b_h)
+            h_tilde = np.tanh(
+                self.W_hh @ self.h
+                + self.W_hm @ self.m
+                + self.W_hi @ obs
+                + self.W_he * self.energy_deficit
+                + self.b_h
+            )
             self.h = (1.0 - self.alpha_h) * self.h + self.alpha_h * h_tilde
         else:
             self.h.fill(0.0)

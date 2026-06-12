@@ -133,4 +133,22 @@ def compute_metrics(log: Dict) -> Dict[str, float]:
                 np.mean(leave_times) if leave_times else 0.0
             )
 
+    # Viability metrics (present only when the environment enables energy).
+    # These are the PRIMARY outcome variables under the viability-first
+    # redesign (docs/redesign_viability_first.md): success = staying viable,
+    # NOT foraging score. Energy is never maximized by the agent; these only
+    # measure how close the agent came to its viability boundary (death).
+    if "energy" in log and len(log["energy"]) > 0:
+        energy = np.asarray(log["energy"], dtype=float)
+        died = bool(log.get("died", False))
+        metrics["survival_time"] = float(len(energy))
+        metrics["died"] = float(died)
+        metrics["min_energy"] = float(np.min(energy))
+        metrics["final_energy"] = float(energy[-1])
+        metrics["mean_energy"] = float(np.mean(energy))
+        # Mean distance from the death boundary (1 = full, 0 = dead).
+        metrics["mean_viability_margin"] = float(np.mean(energy))
+        # Fraction of time spent in a low-energy danger zone (< 20%).
+        metrics["low_energy_fraction"] = float(np.mean(energy < 0.2))
+
     return metrics

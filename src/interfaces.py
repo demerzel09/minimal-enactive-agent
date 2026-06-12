@@ -31,7 +31,15 @@ class PatchState:
 
 @dataclass
 class EnvState:
-    """Raw environment state exposed to the agent's sensing apparatus."""
+    """Raw environment state exposed to the agent's sensing apparatus.
+
+    ``energy`` is the body's metabolic/viability state (managed by the
+    environment's physics, like movement). It is exposed here so the agent
+    can interocept it — but it is an internal/body state, NOT an exteroceptive
+    sensory channel, so it must NOT be folded into the observation vector ``i``
+    (see docs/redesign_viability_first.md and architecture_principles.md 原則1).
+    Defaults keep energy inert unless an environment enables it.
+    """
     pos: np.ndarray
     heading: float
     patches: List[PatchState]
@@ -40,6 +48,9 @@ class EnvState:
     risk_spike: float
     in_any_patch: bool
     t: int
+    energy: float = 1.0
+    energy_max: float = 1.0
+    alive: bool = True
 
 
 @dataclass

@@ -80,12 +80,28 @@ class ForagingEnv(BaseEnvironment):
         self.risk_noise_prob = float(env_cfg.get("risk_noise_prob", 0.03))
         self.risk_noise_strength = float(env_cfg.get("risk_noise_strength", 0.5))
 
+        # Viability / metabolism (energy). Disabled by default for backward
+        # compatibility — existing configs/experiments are unchanged.
+        # When enabled, energy is depleted by metabolism + movement and
+        # replenished by feeding; reaching 0 means death (loop should stop).
+        # Energy is the body's stake: it is NOT a reward to maximize, it is the
+        # condition under which the dynamics continue. See
+        # docs/redesign_viability_first.md.
+        self.energy_enabled = bool(env_cfg.get("energy_enabled", False))
+        self.energy_max = float(env_cfg.get("energy_max", 1.0))
+        self.energy_init = float(env_cfg.get("energy_init", self.energy_max))
+        self.metabolic_cost = float(env_cfg.get("metabolic_cost", 0.0))
+        self.move_cost_coef = float(env_cfg.get("move_cost_coef", 0.0))
+        self.energy_gain_coef = float(env_cfg.get("energy_gain_coef", 1.0))
+
         self.seed = int(config.get("seed", 0))
         self.rng = np.random.default_rng(self.seed)
 
         self.pos = np.zeros(2, dtype=float)
         self.heading = 0.0
         self.t = 0
+        self.energy = self.energy_init
+        self.alive = True
 
     def reset(self) -> EnvState:
         env_cfg = self.cfg["environment"]
@@ -93,6 +109,8 @@ class ForagingEnv(BaseEnvironment):
         self.heading = float(env_cfg.get("start_heading", 0.0))
         self.patch_levels = [mf for mf in self.patch_max_foods]
         self.t = 0
+        self.energy = self.energy_init
+        self.alive = True
         return self._make_state()
 
     def step(self, action: np.ndarray) -> Tuple[EnvState, StepInfo]:
@@ -107,12 +125,24 @@ class ForagingEnv(BaseEnvironment):
 
         # Closed-loop environmental changes after action.
         in_any = False
+        consumed = 0.0
         for i in range(self.n_patches):
             if self._in_patch_i(self.pos, i):
-                self.patch_levels[i] = max(0.0, self.patch_levels[i] - self.patch_depletions[i])
+                before = self.patch_levels[i]
+                self.patch_levels[i] = max(0.0, before - self.patch_depletions[i])
+                consumed += before - self.patch_levels[i]
                 in_any = True
             else:
                 self.patch_levels[i] = min(self.patch_max_foods[i], self.patch_levels[i] + self.patch_regens[i])
+
+        # Metabolism: spend energy on living + moving, regain by feeding.
+        # Death = energy hits 0 (the dynamics stop); energy is never a reward.
+        if self.energy_enabled and self.alive:
+            self.energy -= self.metabolic_cost + self.move_cost_coef * speed
+            self.energy += self.energy_gain_coef * consumed
+            self.energy = float(np.clip(self.energy, 0.0, self.energy_max))
+            if self.energy <= 0.0:
+                self.alive = False
 
         self.t += 1
 
@@ -122,6 +152,9 @@ class ForagingEnv(BaseEnvironment):
             "patch_level": self.patch_levels[0],  # primary patch for backward compat
             "x": self.pos[0],
             "y": self.pos[1],
+            "energy": self.energy,
+            "alive": float(self.alive),
+            "consumed": consumed,
         })
         for i in range(self.n_patches):
             info.info[f"patch_{i}_level"] = self.patch_levels[i]
@@ -147,6 +180,9 @@ class ForagingEnv(BaseEnvironment):
             risk_spike=risk_spike,
             in_any_patch=any(self._in_patch_i(self.pos, i) for i in range(self.n_patches)),
             t=self.t,
+            energy=self.energy,
+            energy_max=self.energy_max,
+            alive=self.alive,
         )
 
     def _in_patch_i(self, pos: np.ndarray, i: int) -> bool:
