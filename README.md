@@ -42,6 +42,42 @@ uv run python -m src.viz_viability --config configs/odor_field_harsh.yaml --seed
 > 「コヒーレンス駆動」「知性主体」「A/B/C」「残余」「増築」「precariousness」「locus」などの語は
 > この後段と `docs/` の各文書で定義される（多くは**現時点で概念であり未実装**であることに注意）。
 
+## 文書の読み方 — 哲学的に方向を保つための導線
+
+哲学文書は「最初に決めた答えを守る憲法」ではない。**予期しない実験結果を「反証・制約・チューニング問題」の
+どれとして扱うかを判定する装置**である。方向性を保ちつつ、実験が本当に要求する方向へ更新するために使う。
+
+### 読み順（用途別マップ）
+
+```text
+README（実装 / 評価 / 主張）
+ ├─ なぜこの研究か・方法論（増築 / 環境先行 / 棄却基準）→ research_philosophy.md
+ ├─ 守るべき核・判断軸（性能でなく "主体の構成" か）    → intelligent_subject.md
+ ├─ 実験の現在地（区切りのまとめ）                      → summary_viability_arc.md
+ ├─ 失敗をどう読むか（批判 → 実験設計への翻訳）          → critical_review → redesign_viability_first.md
+ ├─ 実装に翻訳する（体制・拡張原則）                    → architecture_principles.md
+ └─ 背景・発展理論（歴史的背景 / 深掘り）               → genealogy / discussion_summary / concept_lattice
+```
+
+`discussion_summary.md` と `genealogy_central_hypothesis.md` は「なぜこの賭けを選んだか」の **歴史的背景**
+（PoC 実装前の語りを含む）。`concept_lattice_role_locus.md` は A/B/C・locus を既知とする **発展的な深掘り**。
+いずれも主導線ではなく枝。
+
+### 実験が課題にぶつかったときの手順
+
+1. **現在の結果を確認**: [summary_viability_arc.md](docs/summary_viability_arc.md)
+2. **その結果が中心命題に何を問うか**: [critical_review_meta_neuro_evo.md](docs/critical_review_meta_neuro_evo.md)
+   （必ず 1 を先に。本文は実験 0–9 のスナップショットで、冒頭に更新メモがある）
+3. **棄却・増築・環境先行の基準に照らす**: [research_philosophy.md](docs/research_philosophy.md) §8–11
+4. **その実験が「主体の構成」に寄与するかを問う**: [intelligent_subject.md](docs/intelligent_subject.md) §7
+5. **次の実験へ翻訳する**: [redesign_viability_first.md](docs/redesign_viability_first.md) と [architecture_principles.md](docs/architecture_principles.md)
+
+> **反証を都合よく吸収しないために**: これらの文書には「守るべき方法論（判断軸）」と
+> 「実験で更新されうる作業仮説（形而上学的な賭け）」が混在する。前者（`intelligent_subject.md` §7 の判断基準、
+> `research_philosophy.md` §8–11 の棄却/増築/環境先行）は方向を保つために **守る**。
+> 後者（「主体性は既約」「自己維持は唯一の自己所有目的」「LLM は既約性を支持」など）は
+> **反証されうる仮説**として、実験結果で **更新する**。
+
 ## なぜこのリポジトリがあるのか（動機と立場）
 
 ### 出発点の問い
