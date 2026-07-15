@@ -2,6 +2,46 @@
 
 閉じた感覚運動ループの中で、内部状態からどのように振る舞いが立ち上がるのかを調べるための、最小限の身体化エージェントです。
 
+## このリポジトリが今できること（実装 / 評価 / 主張の三層）
+
+読みやすさのため、まず「**何を実装し、何を評価し、どこまで主張できるか**」を分けて示す。
+哲学的動機・系譜・過去の実験史は後段（「なぜこのリポジトリがあるのか」以降）に置く。
+
+### 1. 実装（何が動くか）
+
+固定重みの小さなリカレント方策（遅い内部状態 `h` ＋ 行動モード `m`）を、閉じた感覚運動ループで回す。
+**個体の生涯中には報酬もオンライン学習もない**。現行モデルは匂い場＋感覚適応＋エネルギー/死（viability）を含む
+（式は下記「最小モデル」節。内受容経路 `W_he·energy_deficit` を含む）。
+
+### 2. 評価と境界条件（誰が何を最適化するか）
+
+- **エージェント（個体内）**: 報酬なし・学習なし。行動は h/m の力学から生じる。
+- **研究者（個体外・世代スケール）**: GA で固定重みを選ぶ。これは **外部 fitness による設計最適化** であり、
+  個体内報酬ではない（fitness は明示的な加重スコア。採餌用は `src/run_ga.py`、viability 用は `src/run_ga_viability.py`）。
+- ものさし（出力変数）は、採餌スコアではなく **viability（存続：survival / energy margin）**。
+
+### 3. 現時点の結論と留保（どこまで言えるか）
+
+- **結論**: `h` は不可欠ではない（易しい環境では h なしでも生存）。だが **環境を苛烈にすると、
+  h あり(full)は存続マージンを保ち、h なし(no_h)は餓死する**。機構は「予測」ではなく
+  「**持続的 set-point による恒常性の安定化**」（実験12b）。
+- **留保（一般性は未確定）**: 単一環境族・**GA 最適化・少数シード（3）・訓練＝評価環境**。
+  binary 分離は苛烈度 L3 で 1/3 シード（用量反応の単調性が主証拠）。本文の「89%」「決定的」等も同条件下の値。
+- 詳細と弧: 下記「viability-first の弧」および `docs/summary_viability_arc.md`。
+
+### 4. 主結論の再現
+
+```bash
+# full/no_h を viability 適応度(存続)で最適化し、生存を比較（苛烈環境で h の効果を見る）
+uv run python -m src.run_ga_viability --config configs/odor_field_harsh.yaml --seeds 7 13 42
+# 機構の可視化（h / energy / mode の時系列）
+uv run python -m src.viz_viability --config configs/odor_field_harsh.yaml --seed 42
+```
+
+> 以下は **研究上の立場・動機・系譜・過去の実験史**。上の三層（実装/評価/主張）と区別して読んでほしい。
+> 「コヒーレンス駆動」「知性主体」「A/B/C」「残余」「増築」「precariousness」「locus」などの語は
+> この後段と `docs/` の各文書で定義される（多くは**現時点で概念であり未実装**であることに注意）。
+
 ## なぜこのリポジトリがあるのか（動機と立場）
 
 ### 出発点の問い
@@ -29,7 +69,7 @@ LLM に欠け、スケーリングでは自動的に出てこない。
 プロジェクトが決着をつけうる中心問題は「**主体性は既約か、能力の創発か**」であり、
 自己所有の目的は構成的な自己維持としてのみ成立する。これがプロジェクトに核を与え、方向の逸脱を防ぐ。
 さらに、主体・知性・予測は同じ所在(locus)にあるとは限らない——植物個体は予測しないが、種＝系統は予測なき適応的知性でありうる。
-この〈役割 × 所在 × 時間スケール〉の座標系は、A/B/C より一段抽象的な整理を与える。
+この〈役割 × 所在 × 時間スケール〉の座標系は、A/B/C（A＝本プロジェクトのエナクティブ主体、B＝LLM、C＝世界モデル/能動推論。`docs/concept_lattice_role_locus.md`）より一段抽象的な整理を与える。
 
 > 詳細: `docs/intelligent_subject.md`（知性主体）,
 > `docs/concept_lattice_role_locus.md`（役割×所在×時間スケールの格子と 2024–2026 文献マップ）
@@ -106,22 +146,41 @@ LLM が認知を切り離して見せた残余として中心命題を確定。
 - **行動モード変数** m（活用/探索/回避のレジーム選択）
 - **閉ループ環境**（食物パッチの枯渇と再生、リスク信号）
 
-報酬信号・学習アルゴリズム・外部目標は一切使用しません。
+**個体（エージェント）は生涯中に報酬信号・学習・外部目標を一切用いません。** 一方、研究者は世代スケールで
+外部 fitness（GA）により固定重みを選びます——これは個体内報酬ではなく設計最適化です（上記「境界条件」）。
 
-## 最小モデル
+> ※「状態依存のコヒーレンス駆動」は現時点では **概念的原理であり、エージェント内で計算されていない**
+> （良い軌跡への事後ラベル＋GA 適応度）。本実装での操作的な代理は **viability（energy による存続）** であり、
+> 何が反証になるかは `docs/redesign_viability_first.md` の弁別テストで定義される。
+
+## 最小モデル（現行）
 
 $$
 \begin{aligned}
-h_{t+1} &= (1-\alpha_h) h_t + \alpha_h \tanh(W_{hh} h_t + W_{hm} m_t + W_{hi} i_t + b_h) \\
-m_{t+1} &= \text{softmax}\big((1-\alpha_m) u_t + \alpha_m \tanh(W_{uh} h_t + W_{uu} u_t + W_{ui} i_t + b_u)\big) \\
+h_{t+1} &= (1-\alpha_h) h_t + \alpha_h \tanh(W_{hh} h_t + W_{hm} m_t + W_{hi} i_t + W_{he}\, e_t + b_h) \\
+u_{t+1} &= (1-\alpha_m) u_t + \alpha_m \tanh(W_{uh} h_t + W_{uu} u_t + W_{ui} i_t + b_u) \\
+m_t &= \text{softmax}(u_t) \\
 a_t &= W_a m_t + b_a
 \end{aligned}
 $$
 
-- h: 2 次元（枯渇圧、探索ドリフト）
-- m: 3 次元（活用、探索、回避）
-- i: 3 次元（局所食物、局所リスク、食物変化量）
-- a: 2 次元（旋回、速度）
+- `h`: 2 次元（枯渇圧、探索ドリフト）。遅い内部状態。
+- `u`: softmax 前のモード活性。`m = softmax(u)` がモード分布。
+- `m`: 3 次元（活用、探索、回避）。
+- `i`: 3 次元（局所食物、局所リスク、食物変化量）。
+- `e_t`: **内受容のエネルギー欠損**（`1 - energy/energy_max`）。**`i`（外受容）には入れず**、専用経路 `W_he` で `h` を駆動する（`architecture_principles.md` 原則1）。energy 無効時は `e_t = 0` で下記「採餌モデル」に一致（後方互換）。
+- `a`: 2 次元（旋回、速度）。
+
+**モデルには実質二世代あることに注意**:
+
+| | 採餌モデル（実験0–8） | viability-first モデル（実験9–、**現行**） |
+|---|---|---|
+| 環境 | 抽象パッチ（枯渇・再生） | 匂い場（残り香）＋ energy/死 |
+| `i` の局所食物 | 生の食物レベル | 感覚適応後の**偏差**（`alpha_adapt>0`） |
+| energy / `W_he` | なし（`e_t=0`） | あり（内受容で `h` を接地） |
+| ものさし | パッチ再訪など採餌指標 | viability（survival / energy margin） |
+
+実装は `src/agent.py`（`step()` の h 更新、`sense()` の感覚適応と内受容）。
 
 ## 現在の到達点
 
@@ -172,6 +231,7 @@ $$
 
 GA-universal（全環境同時最適化）は、環境別に特化した場合の天井値の **89%** を
 単一パラメータで達成。残り 11% は環境特化の余地であり、アーキテクチャ制約ではない。
+（評価条件: 7 環境・各 3 シード平均、**GA の訓練＝評価環境**。汎化テストではない点に注意。）
 
 ### アーキテクチャの能力と限界
 
@@ -206,28 +266,40 @@ GA-universal（全環境同時最適化）は、環境別に特化した場合�
 
 ```
 src/
-  env.py              - 2D 閉ループ採餌環境（複数パッチ対応）
-  agent.py            - h と m をもつ最小リカレントエージェント
-  run_simulation.py   - 単一エピソードのシミュレーション
-  run_multi_seed.py   - 複数シード × 条件の体系的比較
-  run_challenge.py    - 7環境チャレンジスイートのベンチマーク
-  run_ga.py           - 遺伝的アルゴリズムによるパラメータ最適化
-  eval.py             - 定性的指標の計算
-  viz.py              - 軌跡と内部状態の可視化
+  interfaces.py        - 環境/エージェントの抽象基底とデータ構造（EnvState に energy 等）
+  env.py               - 2D 閉ループ採餌環境（複数パッチ、energy/死）
+  envs/odor_field.py   - 匂い場環境（残り香。ForagingEnv を継承）
+  agent.py             - h と m をもつ最小リカレントエージェント（感覚適応・W_he 内受容）
+  run_simulation.py    - 単一エピソード（energy ログ・死で打ち切り）
+  run_multi_seed.py    - 複数シード × 条件の体系的比較
+  run_challenge.py     - 7環境チャレンジスイートのベンチマーク（採餌）
+  run_ga.py            - 採餌適応度の GA（実験7-8）
+  run_ga_viability.py  - viability 適応度の GA（実験11-12。W_he 含む・死で打ち切り）★現行
+  eval.py              - 指標（採餌指標＋viability 指標: survival/min_energy 等）
+  viz.py               - 軌跡と内部状態の可視化
+  viz_viability.py     - viability 機構の可視化（h/energy/mode 時系列。実験12b）★現行
 
 configs/
-  full.yaml           - 完全モデル（v7 ベースライン）
-  ablation_no_h.yaml  - アブレーション: h なし
-  ablation_no_m.yaml  - アブレーション: m なし
-  challenge/          - 7 つのチャレンジ環境設定
+  full.yaml                    - 採餌完全モデル（v7 ベースライン）
+  ablation_no_h.yaml / no_m.yaml - アブレーション
+  challenge/                   - 7 つのチャレンジ環境設定
+  odor_field*.yaml             - 匂い場（実験9）
+  viability.yaml               - 単一パッチ + energy（Phase 0 検証）
+  odor_field_viability*.yaml   - 匂い場 + energy（実験10-11。full / no_h）
+  odor_field_harsh.yaml        - 苛烈 viability 環境（実験12）★現行の主結論
 
 docs/
-  discussion_summary.md      - 背景と概念的な流れ
-  model_spec.md              - モデル詳細と前提
-  poc_plan.md                - 実装寄りの PoC 計画
-  experiment_plan.md         - 評価計画
+  README 冒頭からの導線で読める。主要:
+  summary_viability_arc.md   - ★実験9-12b の区切りのまとめ（現在の主結論）
+  redesign_viability_first.md- ★仕切り直し v2 の実装・評価計画
   experiment_log.md          - 全実験の詳細記録（画像付き）
-  architecture_principles.md - アーキテクチャ進化方針
+  intelligent_subject.md     - 「知性主体」を核とする基礎文書
+  concept_lattice_role_locus.md - 役割×所在×時間スケールの格子と文献マップ
+  cognition_coupling_principles.md - 認知(LLM)との結合の拡張原則
+  critical_review_meta_neuro_evo.md - 批判的レビュー（2026-06-11 スナップショット）
+  genealogy_central_hypothesis.md   - 中心仮説の系譜
+  research_philosophy.md / architecture_principles.md / environment_first_roadmap.md
+  discussion_summary.md / model_spec.md / poc_plan.md / experiment_plan.md
 ```
 
 ## セットアップ
@@ -264,11 +336,23 @@ uv run python -m src.run_multi_seed
 uv run python -m src.run_challenge
 ```
 
-### GA パラメータ最適化
+### GA パラメータ最適化（採餌・実験7-8）
 
 ```bash
 uv run python -m src.run_ga --pop-size 30 --generations 50 --compare
 ```
+
+### viability 実験（現行の主結論・実験11-12b）
+
+```bash
+# viability 適応度(存続)で full/no_h を最適化し生存を比較。--config を易→苛烈に変えて用量反応を見る
+uv run python -m src.run_ga_viability --config configs/odor_field_viability.yaml --seeds 7 13 42   # 易
+uv run python -m src.run_ga_viability --config configs/odor_field_harsh.yaml     --seeds 7 13 42   # 苛烈
+# 機構の可視化（h が持続的 set-point として存続リズムを安定化するかを時系列で見る）
+uv run python -m src.viz_viability --config configs/odor_field_harsh.yaml --seed 42
+```
+
+（結果は `outputs/` 以下に出力。要約は `docs/summary_viability_arc.md`。）
 
 ## 実験の経緯
 
