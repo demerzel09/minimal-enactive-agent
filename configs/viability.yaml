@@ -2,7 +2,7 @@
 # Single patch + energy/death enabled. The agent must leave a depleting patch
 # and return to refuel, or it starves. Energy is NOT a reward — it is the
 # condition under which the dynamics continue (death = loop stops).
-# See docs/redesign_viability_first.md.
+# See docs/baseline/redesign_viability_first.md.
 seed: 7
 
 model:

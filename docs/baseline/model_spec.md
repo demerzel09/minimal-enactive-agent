@@ -1,5 +1,7 @@
 # モデル仕様: 最小エナクティブエージェント
 
+> 位置づけ: h/m/i/a の基本構造を定める採餌モデルの仕様。現行の感覚適応・energy・内受容経路を含む仕様は [README の最小モデル](../../README.md#最小モデル現行) と [viability-first 設計](redesign_viability_first.md) を参照。
+
 ## 1. 目的
 
 この文書は、`minimal-enactive-agent` で用いる最初の計算モデルを規定する。

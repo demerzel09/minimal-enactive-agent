@@ -86,7 +86,7 @@ class ForagingEnv(BaseEnvironment):
         # replenished by feeding; reaching 0 means death (loop should stop).
         # Energy is the body's stake: it is NOT a reward to maximize, it is the
         # condition under which the dynamics continue. See
-        # docs/redesign_viability_first.md.
+        # docs/baseline/redesign_viability_first.md.
         self.energy_enabled = bool(env_cfg.get("energy_enabled", False))
         self.energy_max = float(env_cfg.get("energy_max", 1.0))
         self.energy_init = float(env_cfg.get("energy_init", self.energy_max))

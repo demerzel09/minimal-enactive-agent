@@ -1,5 +1,7 @@
 # 実験計画: 最小エナクティブエージェント
 
+> 位置づけ: 初期 PoC と採餌モデルの実験計画を保存した参考資料。現行の評価計画は [viability-first 設計](../baseline/redesign_viability_first.md)、実施結果は [実験ログ](../baseline/experiment_log.md) を参照。
+
 ## 1. 目的
 
 この文書は、`minimal-enactive-agent` における最初の実験を定義する。
@@ -342,7 +344,7 @@
 
 最初の PoC（実験 0-2）は完了し、作業仮説は支持された。
 Full model のみが安定したパッチ再訪・構造的モード切替を示し、3種の ablation で行動が劣化した。
-詳細は `docs/experiment_log.md` を参照。
+詳細は `docs/baseline/experiment_log.md` を参照。
 
 以下の構造的制約も発見された:
 
@@ -350,7 +352,7 @@ Full model のみが安定したパッチ再訪・構造的モード切替を示
 - b_h（バイアス項）が h の力学にとって決定的に重要
 - 行動速度と環境スケールの適合が閉ループ行動の成否を左右する
 
-次フェーズの実験はこれらの知見を深化させつつ、`docs/architecture_principles.md` の
+次フェーズの実験はこれらの知見を深化させつつ、`docs/baseline/architecture_principles.md` の
 進化方針に従って体制を保全する。
 
 ---
@@ -435,7 +437,7 @@ Full model のみが安定したパッチ再訪・構造的モード切替を示
 ## 16. 将来的拡張（体制保全を前提とした増築）
 
 全実験の成果を踏まえて、以下を段階的に検討する。
-すべて `docs/architecture_principles.md` の原則に従い、増築として実施する。
+すべて `docs/baseline/architecture_principles.md` の原則に従い、増築として実施する。
 
 **近い将来（現在のアーキテクチャ内）:**
 

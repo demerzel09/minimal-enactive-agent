@@ -27,7 +27,7 @@
   「**持続的 set-point による恒常性の安定化**」（実験12b）。
 - **留保（一般性は未確定）**: 単一環境族・**GA 最適化・少数シード（3）・訓練＝評価環境**。
   binary 分離は苛烈度 L3 で 1/3 シード（用量反応の単調性が主証拠）。本文の「89%」「決定的」等も同条件下の値。
-- 詳細と弧: 下記「viability-first の弧」および `docs/summary_viability_arc.md`。
+- 詳細と弧: 下記「viability-first の弧」および `docs/baseline/summary_viability_arc.md`。
 
 ### 4. 主結論の再現
 
@@ -47,6 +47,8 @@ uv run python -m src.viz_viability --config configs/odor_field_harsh.yaml --seed
 哲学文書は「最初に決めた答えを守る憲法」ではない。**予期しない実験結果を「反証・制約・チューニング問題」の
 どれとして扱うかを判定する装置**である。方向性を保ちつつ、実験が本当に要求する方向へ更新するために使う。
 
+全文書の分類とリンクは [docs/README.md](docs/README.md) を参照。
+
 ### 読み順（用途別マップ）
 
 ```text
@@ -65,12 +67,12 @@ README（実装 / 評価 / 主張）
 
 ### 実験が課題にぶつかったときの手順
 
-1. **現在の結果を確認**: [summary_viability_arc.md](docs/summary_viability_arc.md)
-2. **その結果が中心命題に何を問うか**: [critical_review_meta_neuro_evo.md](docs/critical_review_meta_neuro_evo.md)
+1. **現在の結果を確認**: [summary_viability_arc.md](docs/baseline/summary_viability_arc.md)
+2. **その結果が中心命題に何を問うか**: [critical_review_meta_neuro_evo.md](docs/reference/critical_review_meta_neuro_evo.md)
    （必ず 1 を先に。本文は実験 0–9 のスナップショットで、冒頭に更新メモがある）
-3. **棄却・増築・環境先行の基準に照らす**: [research_philosophy.md](docs/research_philosophy.md) §8–11
-4. **その実験が「主体の構成」に寄与するかを問う**: [intelligent_subject.md](docs/intelligent_subject.md) §7
-5. **次の実験へ翻訳する**: [redesign_viability_first.md](docs/redesign_viability_first.md) と [architecture_principles.md](docs/architecture_principles.md)
+3. **棄却・増築・環境先行の基準に照らす**: [research_philosophy.md](docs/baseline/research_philosophy.md) §8–11
+4. **その実験が「主体の構成」に寄与するかを問う**: [intelligent_subject.md](docs/baseline/intelligent_subject.md) §7
+5. **次の実験へ翻訳する**: [redesign_viability_first.md](docs/baseline/redesign_viability_first.md) と [architecture_principles.md](docs/baseline/architecture_principles.md)
 
 > **反証を都合よく吸収しないために**: これらの文書には「守るべき方法論（判断軸）」と
 > 「実験で更新されうる作業仮説（形而上学的な賭け）」が混在する。前者（`intelligent_subject.md` §7 の判断基準、
@@ -95,7 +97,7 @@ LLM は、推論・言語・計画といった認知能力を、身体も感覚�
 LLM に欠け、スケーリングでは自動的に出てこない。
 この「残余」を最小構造から構成論的に組み立てて理解するのが、本リポジトリの目的である。
 
-> 詳細: `docs/research_philosophy.md`, `docs/discussion_summary.md`
+> 詳細: `docs/baseline/research_philosophy.md`, `docs/reference/discussion_summary.md`
 
 ### 対象は「知性」ではなく「知性主体」
 
@@ -105,12 +107,12 @@ LLM に欠け、スケーリングでは自動的に出てこない。
 プロジェクトが決着をつけうる中心問題は「**主体性は既約か、能力の創発か**」であり、
 自己所有の目的は構成的な自己維持としてのみ成立する。これがプロジェクトに核を与え、方向の逸脱を防ぐ。
 さらに、主体・知性・予測は同じ所在(locus)にあるとは限らない——植物個体は予測しないが、種＝系統は予測なき適応的知性でありうる。
-この〈役割 × 所在 × 時間スケール〉の座標系は、A/B/C（A＝本プロジェクトのエナクティブ主体、B＝LLM、C＝世界モデル/能動推論。`docs/concept_lattice_role_locus.md`）より一段抽象的な整理を与える。
+この〈役割 × 所在 × 時間スケール〉の座標系は、A/B/C（A＝本プロジェクトのエナクティブ主体、B＝LLM、C＝世界モデル/能動推論。`docs/reference/concept_lattice_role_locus.md`）より一段抽象的な整理を与える。
 
-> 詳細: `docs/intelligent_subject.md`（知性主体）,
-> `docs/concept_lattice_role_locus.md`（役割×所在×時間スケールの格子と 2024–2026 文献マップ）
+> 詳細: `docs/baseline/intelligent_subject.md`（知性主体）,
+> `docs/reference/concept_lattice_role_locus.md`（役割×所在×時間スケールの格子と 2024–2026 文献マップ）
 >
-> 現行の実装・評価計画（仕切り直し v2）: `docs/redesign_viability_first.md`
+> 現行の実装・評価計画（仕切り直し v2）: `docs/baseline/redesign_viability_first.md`
 > ——死にうる環境を入れ h を実エネルギーに接地し、出力変数を viability にして
 > 「precariousness は内部状態を接地するか」を段階的ファクトリアルで判定する。
 
@@ -131,7 +133,7 @@ LLM が認知を切り離して見せた残余として中心命題を確定。
 ただしこれは厳密な導出ではなく **選ばれた賭け** であり、認知と報酬は「排除」ではなく
 「いま入れず、創発するか観察する／必要なら後で内発的価値信号として入れ直す」ための保留である。
 
-> 詳細: `docs/genealogy_central_hypothesis.md`
+> 詳細: `docs/reference/genealogy_central_hypothesis.md`
 
 ### この立場が抱える未解決の問い・課題
 
@@ -143,7 +145,7 @@ LLM が認知を切り離して見せた残余として中心命題を確定。
 - **増築仮説は未実証**: 実験9（匂い場）で「h 不可欠」が崩れ（h なしが優勢になり）、
   まだ一度も質的に新しい能力を足す「増築」の成功例がない。
 
-> 詳細な批判的検討: `docs/critical_review_meta_neuro_evo.md`
+> 詳細な批判的検討: `docs/reference/critical_review_meta_neuro_evo.md`
 
 ### 類似研究との位置関係
 
@@ -158,7 +160,7 @@ LLM が認知を切り離して見せた残余として中心命題を確定。
 最も近い対極は **Dreamer 4** である。Dreamer は「正確な世界モデルを建てれば行動は従う」
 （予測ファースト）に賭ける。本プロジェクトは「予測モジュールを建てず、閉ループのダイナミクスから
 予測的振る舞いが創発する」に賭ける。**この対立は検証可能**であり、本リポジトリの中心的な実験課題でもある
-（`docs/critical_review_meta_neuro_evo.md` §3）。
+（`docs/reference/critical_review_meta_neuro_evo.md` §3）。
 
 ## 概要
 
@@ -187,7 +189,7 @@ LLM が認知を切り離して見せた残余として中心命題を確定。
 
 > ※「状態依存のコヒーレンス駆動」は現時点では **概念的原理であり、エージェント内で計算されていない**
 > （良い軌跡への事後ラベル＋GA 適応度）。本実装での操作的な代理は **viability（energy による存続）** であり、
-> 何が反証になるかは `docs/redesign_viability_first.md` の弁別テストで定義される。
+> 何が反証になるかは `docs/baseline/redesign_viability_first.md` の弁別テストで定義される。
 
 ## 最小モデル（現行）
 
@@ -283,7 +285,7 @@ GA-universal（全環境同時最適化）は、環境別に特化した場合�
 
 ### viability-first の弧（実験 9–12b）— 現在の主結論
 
-採餌スコアではなく **viability（存続）** を出力変数に据え直した再設計（`docs/redesign_viability_first.md`）以降の弧:
+採餌スコアではなく **viability（存続）** を出力変数に据え直した再設計（`docs/baseline/redesign_viability_first.md`）以降の弧:
 
 | 実験 | 問い | 結果 |
 |---|---|---|
@@ -296,7 +298,7 @@ GA-universal（全環境同時最適化）は、環境別に特化した場合�
 → 「h 不可欠 → 有害」の反転は解消。正確な主張は「**h は不可欠ではないが、viability の恒常性安定化に効き、
 環境が苛烈なほど決定的**」。遅い内部状態の存在理由が、初めて**存続の言葉**で機構的に基礎づけられた。
 
-> 区切りのまとめ: `docs/summary_viability_arc.md`
+> 区切りのまとめ: `docs/baseline/summary_viability_arc.md`
 
 ## リポジトリ構成
 
@@ -325,17 +327,10 @@ configs/
   odor_field_harsh.yaml        - 苛烈 viability 環境（実験12）★現行の主結論
 
 docs/
-  README 冒頭からの導線で読める。主要:
-  summary_viability_arc.md   - ★実験9-12b の区切りのまとめ（現在の主結論）
-  redesign_viability_first.md- ★仕切り直し v2 の実装・評価計画
-  experiment_log.md          - 全実験の詳細記録（画像付き）
-  intelligent_subject.md     - 「知性主体」を核とする基礎文書
-  concept_lattice_role_locus.md - 役割×所在×時間スケールの格子と文献マップ
-  cognition_coupling_principles.md - 認知(LLM)との結合の拡張原則
-  critical_review_meta_neuro_evo.md - 批判的レビュー（2026-06-11 スナップショット）
-  genealogy_central_hypothesis.md   - 中心仮説の系譜
-  research_philosophy.md / architecture_principles.md / environment_first_roadmap.md
-  discussion_summary.md / model_spec.md / poc_plan.md / experiment_plan.md
+  README.md       - 全文書の案内・分類基準・各文書の時点
+  baseline/       - 研究対象と判断基準、モデルと評価設計、比較の基準となる実験記録
+  reference/      - 背景・概念整理、過去の計画・提案、対話原本（PDF）
+  assets/         - 実験図
 ```
 
 ## セットアップ
@@ -388,7 +383,7 @@ uv run python -m src.run_ga_viability --config configs/odor_field_harsh.yaml    
 uv run python -m src.viz_viability --config configs/odor_field_harsh.yaml --seed 42
 ```
 
-（結果は `outputs/` 以下に出力。要約は `docs/summary_viability_arc.md`。）
+（結果は `outputs/` 以下に出力。要約は `docs/baseline/summary_viability_arc.md`。）
 
 ## 実験の経緯
 
@@ -406,11 +401,11 @@ uv run python -m src.viz_viability --config configs/odor_field_harsh.yaml --seed
 12. **実験 11**: viability 適応度 GA。GA-full = GA-no_h ＝ パラメータ問題と判明（h は害でない）
 13. **実験 12 / 12b**: 苛烈度ラダー。h は viability 恒常性の安定化器で苛烈なほど決定的。機構を可視化
 
-詳細は `docs/experiment_log.md`、統合まとめは `docs/summary_viability_arc.md` を参照。
+詳細は `docs/baseline/experiment_log.md`、統合まとめは `docs/baseline/summary_viability_arc.md` を参照。
 
 ## 設計哲学
 
 - **報酬なし**: 行動は内部状態ダイナミクスから創発する
 - **学習なし**: 重みは固定（手動設計 + GA 最適化）。オンライン学習は将来の拡張
 - **観測はエージェントの行為**: sense() はエージェント側のメソッド。環境は生の状態のみを持つ
-- **アーキテクチャは body plan**: 変数の役割分担は固定し、拡張は増築として行う（`docs/architecture_principles.md`）
+- **アーキテクチャは body plan**: 変数の役割分担は固定し、拡張は増築として行う（`docs/baseline/architecture_principles.md`）

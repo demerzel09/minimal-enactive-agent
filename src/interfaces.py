@@ -37,7 +37,7 @@ class EnvState:
     environment's physics, like movement). It is exposed here so the agent
     can interocept it — but it is an internal/body state, NOT an exteroceptive
     sensory channel, so it must NOT be folded into the observation vector ``i``
-    (see docs/redesign_viability_first.md and architecture_principles.md 原則1).
+    (see docs/baseline/redesign_viability_first.md and docs/baseline/architecture_principles.md 原則1).
     Defaults keep energy inert unless an environment enables it.
     """
     pos: np.ndarray

@@ -5,7 +5,7 @@
 # NO energy gain, so energy keeps dropping -> deficit rises -> h drives escape.
 # If full now survives/visits comparably to no_h, the exp-9 collapse was a
 # "h about nothing" problem (resolved by grounding h in energy), not a tuning
-# problem (H1). See docs/redesign_viability_first.md §6 (T1).
+# problem (H1). See docs/baseline/redesign_viability_first.md §6 (T1).
 environment:
   alpha_adapt: 0.015
   food_sensor_sigma: 4.0

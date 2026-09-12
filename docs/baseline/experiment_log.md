@@ -108,7 +108,7 @@ b_u = [-0.1, +0.0, -0.2] 活用やや優勢（初期は活用から始まる想�
 
 | 軌跡 | 内部状態 |
 |:---:|:---:|
-| ![v1 trajectory](assets/v1_full_trajectory.png) | ![v1 states](assets/v1_full_states.png) |
+| ![v1 trajectory](../assets/v1_full_trajectory.png) | ![v1 states](../assets/v1_full_states.png) |
 
 パッチを通過後、壁沿いに直進。h は約 -0.4 の固定点に収束し、モード切替が発生しない。
 
@@ -161,14 +161,14 @@ b_u = [-0.1, +0.0, -0.2] 活用やや優勢（初期は活用から始まる想�
 
 | Full model | no-h ablation |
 |:---:|:---:|
-| ![v2 full](assets/v2_full_trajectory.png) | ![v2 no-h](assets/v2_no_h_trajectory.png) |
+| ![v2 full](../assets/v2_full_trajectory.png) | ![v2 no-h](../assets/v2_no_h_trajectory.png) |
 
 Full model はパッチ近傍で密な高速ループを描き、繰り返しパッチを通過している。
 no-h はパッチを一度通過した後、広い軌道で離脱。
 
 **Full model の内部状態**:
 
-![v2 full states](assets/v2_full_states.png)
+![v2 full states](../assets/v2_full_states.png)
 
 h[0], h[1] が動的に変化し、パッチ通過時に応答している。v1 の固定点問題は解消。
 
@@ -219,7 +219,7 @@ v3 (exploit速度低下), v4 (exploit大幅減速), v5 (food_sensor_sigma拡大)
 
 | Full model (1回通過のみ) | no-h (繰り返しループ) |
 |:---:|:---:|
-| ![v4 full](assets/v4_full_trajectory.png) | ![v4 no-h](assets/v4_no_h_trajectory.png) |
+| ![v4 full](../assets/v4_full_trajectory.png) | ![v4 no-h](../assets/v4_no_h_trajectory.png) |
 
 exploit を遅くした結果、Full model はパッチを1回通過して右上に停滞。
 一方 no-h の方がパッチ周辺をループし、逆転が発生した。
@@ -256,13 +256,13 @@ v2 は h の力学を活性化させることに成功したが、行動がパ�
 
 | Full model | no-h ablation |
 |:---:|:---:|
-| ![v6 full](assets/v6_full_trajectory.png) | ![v6 no-h](assets/v6_no_h_trajectory.png) |
+| ![v6 full](../assets/v6_full_trajectory.png) | ![v6 no-h](../assets/v6_no_h_trajectory.png) |
 
 Full model はワールド全体を使いながらパッチを周期的に通過。no-h は広いループで1回通過のみ。
 
 **Full model の内部状態と行動モード**:
 
-![v6 full states](assets/v6_full_states.png)
+![v6 full states](../assets/v6_full_states.png)
 
 上段: h[0], h[1] が明確な周期的振動。食物パッチ通過時に谷、離れると山。
 中段: m[0](活用) と m[1](探索) が交互に優勢になる構造的切替。
@@ -354,11 +354,11 @@ Full model はワールド全体を使いながらパッチを周期的に通過
 
 | Full model | no-h |
 |:---:|:---:|
-| ![full](assets/exp2_full_trajectory.png) | ![no-h](assets/exp2_no_h_trajectory.png) |
+| ![full](../assets/exp2_full_trajectory.png) | ![no-h](../assets/exp2_no_h_trajectory.png) |
 
 | no-m | reduced-recurrence |
 |:---:|:---:|
-| ![no-m](assets/exp2_no_m_trajectory.png) | ![reduced-rec](assets/exp2_reduced_rec_trajectory.png) |
+| ![no-m](../assets/exp2_no_m_trajectory.png) | ![reduced-rec](../assets/exp2_reduced_rec_trajectory.png) |
 
 Full model のみがパッチを繰り返し通過する軌道を描く。他の3条件はいずれも1回通過後に広いループに移行する。
 
@@ -393,7 +393,7 @@ Full model のみがパッチを繰り返し通過する軌道を描く。他の
 
 | Full model | reduced-recurrence |
 |:---:|:---:|
-| ![full states](assets/exp2_full_states.png) | ![reduced-rec states](assets/exp2_reduced_rec_states.png) |
+| ![full states](../assets/exp2_full_states.png) | ![reduced-rec states](../assets/exp2_reduced_rec_states.png) |
 
 Full model (左): h が安定した振動を示し、m が構造的に交替。パッチ通過との対応が明確。
 reduced-recurrence (右): h の振動が浅く不規則。m の切替は頻繁だが持続がなく、行動に一貫性が欠ける。
@@ -407,7 +407,7 @@ reduced-recurrence (右): h の振動が浅く不規則。m の切替は頻繁�
 
 #### Ablation A: no-h (m + 再帰あり, h=0)
 
-![no-h states](assets/exp2_no_h_states.png)
+![no-h states](../assets/exp2_no_h_states.png)
 
 h はゼロ固定（上段）。m は初期の一時変動後にほぼ一定（中段）。食物信号はパッチ通過時の1回のみ（下段）。
 
@@ -473,7 +473,7 @@ h はゼロ固定（上段）。m は初期の一時変動後にほぼ一定（�
 
 **Full model**:
 
-![Full model history dependence](assets/exp3_full.png)
+![Full model history dependence](../assets/exp3_full.png)
 
 - **h が大きく異なる**: 豊かな履歴では h[0]≈+0.3, h[1]≈+0.2（低枯渇圧）。
   貧しい履歴では h[0]≈-0.5, h[1]≈-0.5（高枯渇圧）。差のノルム = 1.87。
@@ -482,7 +482,7 @@ h はゼロ固定（上段）。m は初期の一時変動後にほぼ一定（�
 
 **no-h ablation**:
 
-![no-h history dependence](assets/exp3_no_h.png)
+![no-h history dependence](../assets/exp3_no_h.png)
 
 - **h はゼロ固定**（設計通り）。
 - **m にわずかな差**: W_uu の自己再帰により、u にも若干の履歴が残る。
@@ -528,7 +528,7 @@ v1→v6 の試行錯誤で、alpha_h, b_h, food_sensor_sigma が行動に決定�
 
 alpha_h を 0.02 から 0.50 まで変化。alpha_m = 0.40 固定。
 
-![alpha_h sweep](assets/exp4_alpha_h.png)
+![alpha_h sweep](../assets/exp4_alpha_h.png)
 
 | alpha_h | transitions | mode_switches | avg_food | expl_radius | time_in_patch |
 |---|---|---|---|---|---|
@@ -549,7 +549,7 @@ alpha_h が大きいと h の更新が即時入力に追従してしまい、h �
 
 alpha_m = 0.40 固定、比率を 0.1 から 1.5 まで変化。
 
-![ratio sweep](assets/exp4_ratio.png)
+![ratio sweep](../assets/exp4_ratio.png)
 
 **発見**: 比率が小さいほど（h が m より十分遅いほど）行動が豊か。
 比率 0.1 でパッチ再訪 12.3 回。比率 1.0（同速）で 5.3 回。
@@ -567,7 +567,7 @@ alpha_m = 0.40 固定、比率を 0.1 から 1.5 まで変化。
 
 b_h の方向を [0.6, 0.4] に固定し、大きさを 0.0 から 0.5 まで変化。
 
-![b_h sweep](assets/exp4_bh.png)
+![b_h sweep](../assets/exp4_bh.png)
 
 **発見**: b_h に明確な閾値が存在する。
 
@@ -615,21 +615,21 @@ b_h の方向を [0.6, 0.4] に固定し、大きさを 0.0 から 0.5 まで変
 
 **軌跡**:
 
-![multi-patch full trajectory](assets/exp5_full_trajectory.png)
+![multi-patch full trajectory](../assets/exp5_full_trajectory.png)
 
 エージェントが両方のパッチを訪問し、パッチ間を行き来する軌跡を描いている。
 空間記憶なしで、h の力学のみで 2 つのパッチを結ぶ foraging circuit が自発的に出現。
 
 **内部状態**:
 
-![multi-patch full states](assets/exp5_full_states.png)
+![multi-patch full states](../assets/exp5_full_states.png)
 
 h の振動パターンが単一パッチ版より複雑。食物信号のスパイクが異なる強度で現れており、
 近いパッチと遠いパッチの訪問が区別できる。m の exploit↔explore 切替も持続的。
 
 ### no-h ablation の結果
 
-![multi-patch no-h trajectory](assets/exp5_no_h_trajectory.png)
+![multi-patch no-h trajectory](../assets/exp5_no_h_trajectory.png)
 
 パッチ 0 を1回通過後、壁沿いの広いループに入り、いずれのパッチにも戻らない。
 
@@ -691,7 +691,7 @@ alpha_h: 0.18 → 0.04（比率 alpha_h/alpha_m: 0.45 → 0.10）。その他は
 
 | 軌跡 | 内部状態 |
 |:---:|:---:|
-| ![v7 trajectory](assets/v7_full_trajectory.png) | ![v7 states](assets/v7_full_states.png) |
+| ![v7 trajectory](../assets/v7_full_trajectory.png) | ![v7 states](../assets/v7_full_states.png) |
 
 v6 と比較して軌跡がパッチ近傍を繰り返し通過するパターンがはるかに明確。
 h の振動がゆっくりと大きな振幅を持ち、m の exploit↔explore 切替がシャープになった。
@@ -784,7 +784,7 @@ v7 を現行のベース設定として採用する。
 | F_small | 1.0 +/- 0.0 | 0.014 +/- 0.000 | 0.249 +/- 0.001 | 4.94 +/- 0.01 | 1.0 +/- 0.0 |
 | G_3patches | 8.3 +/- 10.4 | 0.019 +/- 0.018 | 0.127 +/- 0.008 | 6.10 +/- 0.01 | 1.0 +/- 0.0 |
 
-![チャレンジスイート比較](assets/challenge_handtuned_comparison.png)
+![チャレンジスイート比較](../assets/challenge_handtuned_comparison.png)
 
 ### 環境別分析
 
@@ -803,11 +803,11 @@ v7 を現行のベース設定として採用する。
 
 - **B (distant_patches)**: transitions=3.0, mode_switch=1.0。パッチ間距離が大きすぎ、センサー範囲外で次のパッチを発見できない。軌跡を見ると、1つのパッチに到達した後そこに固着し、他のパッチを発見できていない。
 
-![B: 手動設計の軌跡 — 右下パッチに固着](assets/ch_B_handtuned_traj.png)
+![B: 手動設計の軌跡 — 右下パッチに固着](../assets/ch_B_handtuned_traj.png)
 
 - **F (small_world)**: transitions=1.0。world_size=10 で壁反射が支配的。パッチを1回通過して以後再訪なし。
 
-![F: 手動設計の軌跡 — パッチ周辺を通過するが再訪できない](assets/ch_F_handtuned_traj.png)
+![F: 手動設計の軌跡 — パッチ周辺を通過するが再訪できない](../assets/ch_F_handtuned_traj.png)
 
 ### 能力包絡線の要約
 
@@ -892,7 +892,7 @@ v7 を現行のベース設定として採用する。
 合計食物: 1.221 → **2.102**（+72%）  
 合計再訪: 66.3 → **173.0**（+161%）
 
-![手動設計 vs GA 最適化](assets/challenge_handtuned_vs_ga.png)
+![手動設計 vs GA 最適化](../assets/challenge_handtuned_vs_ga.png)
 
 ### 軌跡の視覚的比較
 
@@ -903,7 +903,7 @@ v7 を現行のベース設定として採用する。
 
 | 手動設計 | GA-universal | GA per-env |
 |---|---|---|
-| ![](assets/ch_B_handtuned_traj.png) | ![](assets/ch_B_ga_uni_traj.png) | ![](assets/ch_B_ga_perenv_traj.png) |
+| ![](../assets/ch_B_handtuned_traj.png) | ![](../assets/ch_B_ga_uni_traj.png) | ![](../assets/ch_B_ga_perenv_traj.png) |
 | trans=3, food=0.114 | trans=25, food=0.560 | trans=23, food=0.203 |
 
 手動設計の内部状態は h が片方の値に収束して動かなくなっているのに対し、
@@ -911,7 +911,7 @@ per-env GA では h が周期的に振動し、パッチ訪問のたびにモー
 
 | 手動設計の内部状態 | GA per-env の内部状態 |
 |---|---|
-| ![](assets/ch_B_handtuned_states.png) | ![](assets/ch_B_ga_perenv_states.png) |
+| ![](../assets/ch_B_handtuned_states.png) | ![](../assets/ch_B_ga_perenv_states.png) |
 
 **環境 F（小さい世界）: パラメータ不適合の解消**
 
@@ -920,7 +920,7 @@ per-env GA では h が周期的に振動し、パッチ訪問のたびにモー
 
 | 手動設計 | GA-universal |
 |---|---|
-| ![](assets/ch_F_handtuned_traj.png) | ![](assets/ch_F_ga_uni_traj.png) |
+| ![](../assets/ch_F_handtuned_traj.png) | ![](../assets/ch_F_ga_uni_traj.png) |
 | trans=1 | trans=20 |
 
 **環境 G（3パッチ）: 汎用 vs 特化の差が見える環境**
@@ -930,7 +930,7 @@ Per-env GA のみが3パッチ巡回に近い軌道を実現 — これが uni/c
 
 | 手動設計 | GA-universal | GA per-env |
 |---|---|---|
-| ![](assets/ch_G_handtuned_traj.png) | ![](assets/ch_G_ga_uni_traj.png) | ![](assets/ch_G_ga_perenv_traj.png) |
+| ![](../assets/ch_G_handtuned_traj.png) | ![](../assets/ch_G_ga_uni_traj.png) | ![](../assets/ch_G_ga_perenv_traj.png) |
 | trans=8.3 (std=10.4) | trans=43.7 | trans=53.7 |
 
 **環境 C（高速枯渇）: アーキテクチャの真の限界**
@@ -940,7 +940,7 @@ Per-env GA のみが3パッチ巡回に近い軌道を実現 — これが uni/c
 
 | 手動設計 | GA-universal |
 |---|---|
-| ![](assets/ch_C_handtuned_traj.png) | ![](assets/ch_C_ga_uni_traj.png) |
+| ![](../assets/ch_C_handtuned_traj.png) | ![](../assets/ch_C_ga_uni_traj.png) |
 | trans=15, food=0.118 | trans=26, food=0.043 |
 
 ### 分析: 「パラメータ問題」vs「アーキテクチャ制約」
@@ -1038,7 +1038,7 @@ GA 最適化後も残る制約:
 食物合計: HT=1.221, GA-uni=**2.102**, Per-env=1.773  
 **GA-universal の合計達成率: per-env ceiling の 119%**
 
-![3-way 比較](assets/challenge_three_way_comparison.png)
+![3-way 比較](../assets/challenge_three_way_comparison.png)
 
 ### 指標による比較の違い
 
@@ -1075,7 +1075,7 @@ food は環境パラメータ（パッチの最大食物量、枯渇率）に大
 
 | GA-universal 軌跡 | GA per-env 軌跡 |
 |---|---|
-| ![](assets/ch_A_ga_uni_traj.png) | ![](assets/ch_A_ga_perenv_traj.png) |
+| ![](../assets/ch_A_ga_uni_traj.png) | ![](../assets/ch_A_ga_perenv_traj.png) |
 
 両者ともパッチ周辺の密な周回。内部状態も h の収束値・m の振動パターンがほぼ同じ。
 ベースライン環境では汎化コストがゼロであることを視覚的に確認。
@@ -1084,7 +1084,7 @@ food は環境パラメータ（パッチの最大食物量、枯渇率）に大
 
 | GA-universal 軌跡 | GA per-env 軌跡 |
 |---|---|
-| ![](assets/ch_B_ga_uni_traj.png) | ![](assets/ch_B_ga_perenv_traj.png) |
+| ![](../assets/ch_B_ga_uni_traj.png) | ![](../assets/ch_B_ga_perenv_traj.png) |
 
 GA-uni は右側パッチ周辺で密に周回（food=0.560）。
 Per-env は広い8の字軌道で両パッチを巡回（food=0.203）。
@@ -1094,7 +1094,7 @@ per-env は両パッチを薄く訪問。汎用パラメータの高速 alpha_m 
 
 | GA-universal 内部状態 | GA per-env 内部状態 |
 |---|---|
-| ![](assets/ch_B_ga_uni_states.png) | ![](assets/ch_B_ga_perenv_states.png) |
+| ![](../assets/ch_B_ga_uni_states.png) | ![](../assets/ch_B_ga_perenv_states.png) |
 
 Per-env の h は大きな周期的振動を示し、パッチ訪問と離脱がはっきり h に刻まれている。
 GA-uni の h は高い値で安定し、探索モード優勢を維持。
@@ -1103,14 +1103,14 @@ GA-uni の h は高い値で安定し、探索モード優勢を維持。
 
 | GA-universal 軌跡 | GA per-env 軌跡 |
 |---|---|
-| ![](assets/ch_D_ga_uni_traj.png) | ![](assets/ch_D_ga_perenv_traj.png) |
+| ![](../assets/ch_D_ga_uni_traj.png) | ![](../assets/ch_D_ga_perenv_traj.png) |
 
 GA-uni はパッチ+リスク領域の周辺で密に周回。Per-env はより広い軌道でリスク領域を
 大きく迂回する戦略を取る。
 
 | GA-universal 内部状態 | GA per-env 内部状態 |
 |---|---|
-| ![](assets/ch_D_ga_uni_states.png) | ![](assets/ch_D_ga_perenv_states.png) |
+| ![](../assets/ch_D_ga_uni_states.png) | ![](../assets/ch_D_ga_perenv_states.png) |
 
 注目すべき差: Per-env では **m[2]（回避モード）が頻繁にスパイク** し、
 リスク検知のたびに明確な回避行動を発生させている。
@@ -1122,7 +1122,7 @@ GA-uni の alpha_m=0.59 による「常時高速探索で結果的に回避」�
 
 | GA-universal 軌跡 | GA per-env 軌跡 |
 |---|---|
-| ![](assets/ch_E_ga_uni_traj.png) | ![](assets/ch_E_ga_perenv_traj.png) |
+| ![](../assets/ch_E_ga_uni_traj.png) | ![](../assets/ch_E_ga_perenv_traj.png) |
 
 GA-uni はパッチ近傍で密に周回。Per-env はより広い軌道でパッチを安定的に再訪。
 Per-env の方が in_patch のスパイクがより等間隔で規則的 — alpha_h=0.031 が
@@ -1132,7 +1132,7 @@ h のゆるやかな振動を通じて安定した周期的行動を生んでい
 
 | GA-universal 内部状態 | GA per-env 内部状態 |
 |---|---|
-| ![](assets/ch_F_ga_uni_states.png) | ![](assets/ch_F_ga_perenv_states.png) |
+| ![](../assets/ch_F_ga_uni_states.png) | ![](../assets/ch_F_ga_perenv_states.png) |
 
 両者の内部状態パターンは非常に類似。h の振動周期・振幅、m の explore 優勢パターンが
 ほぼ同一。小世界では限られた軌道しか取れないため、パラメータの違いが
@@ -1142,11 +1142,11 @@ h のゆるやかな振動を通じて安定した周期的行動を生んでい
 
 | GA-universal 軌跡 | GA per-env 軌跡 |
 |---|---|
-| ![](assets/ch_G_ga_uni_traj.png) | ![](assets/ch_G_ga_perenv_traj.png) |
+| ![](../assets/ch_G_ga_uni_traj.png) | ![](../assets/ch_G_ga_perenv_traj.png) |
 
 | GA-universal 内部状態 | GA per-env 内部状態 |
 |---|---|
-| ![](assets/ch_G_ga_uni_states.png) | ![](assets/ch_G_ga_perenv_states.png) |
+| ![](../assets/ch_G_ga_uni_states.png) | ![](../assets/ch_G_ga_perenv_states.png) |
 
 GA-uni はパッチ1・2の2パッチ巡回。Per-env はパッチ2・3を中心により広い巡回。
 内部状態で注目すべきは per-env の h の振幅がやや小さく（alpha_h=0.058 vs 0.053）、
@@ -1405,9 +1405,9 @@ h は害でない(exp11)」→「**苛烈化すると h は存続マージンで
 ### 機構の可視化（実験12b）— 仮説を修正: 予期的ランプではなく「持続的 set-point による恒常性安定化」
 
 L3・seed42（full 生存・no_h 餓死）の GA-best を走らせ、energy・h・mode・local_food の時系列を可視化した
-（`src/viz_viability.py`、図 `docs/assets/exp12_mechanism_seed42.png`）。
+（`src/viz_viability.py`、図 `../assets/exp12_mechanism_seed42.png`）。
 
-![実験12 機構](assets/exp12_mechanism_seed42.png)
+![実験12 機構](../assets/exp12_mechanism_seed42.png)
 
 **当初仮説（「h が離脱前にランプして予期的 departure」）は外れ。** 図が示した実際の機構:
 

@@ -1,5 +1,7 @@
 # Next Step Proposal: Odor Adaptation Before New Body or State Expansion
 
+> 位置づけ: 感覚適応導入前の提案メモ。実施後の結果は [匂い場実験](../baseline/experiment_odor_field.md) を参照。
+
 ## 1. Purpose
 
 This document summarizes the current interpretation of the odor-field experiments and proposes the next architectural step.

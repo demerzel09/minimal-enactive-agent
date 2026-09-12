@@ -47,7 +47,7 @@
 - **実験12b（機構可視化, L3 seed42）**: full の h は最初の ~150 step で 0→~0.6 に立ち上がり以後
   **平坦なプラトー**。energy は full が 0.8–1.0 の規則的ノコギリ波を全 2000 step 維持、
   no_h は ~1000 step 以降リズム崩壊・墜落・餓死。離脱統計 full=55回@energy1.00 / no_h=26回@0.89。
-  図: `docs/assets/exp12_mechanism_seed42.png`。
+  図: `../assets/exp12_mechanism_seed42.png`。
 
 ---
 

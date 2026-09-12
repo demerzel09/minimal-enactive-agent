@@ -1,5 +1,7 @@
 # Environment-First Roadmap
 
+> 位置づけ: 環境先行の研究手順（特に §9 の破綻分類）を定める基本方針。本文の到達段階・未着手表記は実験 7–8 時点の記録。以後の実装順序は [viability-first 設計](redesign_viability_first.md)、到達点は [実験 9–12b のまとめ](summary_viability_arc.md) を参照。
+
 ## 1. この文書の目的
 
 この文書は、`minimal-enactive-agent` を今後どのように複雑化していくかについて、

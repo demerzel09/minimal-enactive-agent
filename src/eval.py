@@ -135,7 +135,7 @@ def compute_metrics(log: Dict) -> Dict[str, float]:
 
     # Viability metrics (present only when the environment enables energy).
     # These are the PRIMARY outcome variables under the viability-first
-    # redesign (docs/redesign_viability_first.md): success = staying viable,
+    # redesign (docs/baseline/redesign_viability_first.md): success = staying viable,
     # NOT foraging score. Energy is never maximized by the agent; these only
     # measure how close the agent came to its viability boundary (death).
     if "energy" in log and len(log["energy"]) > 0:

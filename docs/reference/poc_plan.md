@@ -265,8 +265,8 @@ a_t = \phi(m_t)
 ### ドキュメント
 
 - `README.md` を更新する
-- モデルメモを `docs/model_spec.md` に追加する
-- 実験メモを `docs/experiment_plan.md` に追加する
+- モデルメモを `docs/baseline/model_spec.md` に追加する
+- 実験メモを `docs/reference/experiment_plan.md` に追加する
 
 ## 10. 推奨する開発順序
 
